@@ -130,8 +130,18 @@ void Jeu::evolue()
           itFantome->posX = testX;
           itFantome->posY = testY;
         }
+
+        if (FantomeMangePacman(testX, testY) == true) {
+          std::cout << "Manger !" << '\n';
+        }
     }
+
     deplacePacman(RIEN); //On déplace Pacman
+    for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++){
+        if (FantomeMangePacman(testX, testY) == true) {
+          std::cout << "Manger !" << '\n';
+      }
+    }
 }
 
 bool Jeu::deplacePacman(Direction dir)
@@ -238,4 +248,11 @@ void Jeu::SupprFantome(){
     if (fantomes.size() > 0) {
         fantomes.pop_back();
     }
+}
+
+bool Jeu::FantomeMangePacman(int posX, int posY) const {
+  if (posX == posPacmanX and posY == posPacmanY){ //pacman se fait manger
+    return true;
+  }
+  return false;
 }
