@@ -1,0 +1,12 @@
+TP                            - ok
+Avancer pacman const          - ok
+Fantome mange pacman          -
+Pouvoir pour manger fantomes  -
+Manger fantomes               -
+Score                         -
+Fantome tourner instant       - ok
+changer terrain               - ok
+rajouter des lvl              -
+faire un menu                 -
+
+rajout virage fantomes
