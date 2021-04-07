@@ -64,10 +64,6 @@ class Jeu
     int getNbCasesX() const;
     int getNbCasesY() const;
 
-    // Retourne la position du Pacman
-    // int getPacmanX() const;
-    // int getPacmanY() const;
-
     // Retourne la case à une position donnée
     Case getCase(int, int) const;
 
@@ -84,7 +80,7 @@ class Jeu
 
     // Return si pacman se fait manger (true) ou non
     // bool FantomeMangePacman(Fantome) const;
-    bool FantomeMangePacman(int, int) const;
+    bool FantomeMangePacman(int, int, Pacman &) const;
 };
 
 #endif

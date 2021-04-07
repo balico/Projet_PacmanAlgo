@@ -141,6 +141,21 @@ void Jeu::evolue()
     int depX[] = {-1, 1, 0, 0};
     int depY[] = {0, 0, -1, 1};
 
+    //On déplace Pacman
+    deplacePacman(RIEN, pacmanJ1);
+    deplacePacman(RIEN, pacmanJ2);
+
+    //On test s'il se fait manger par n'importe quel fantome
+    for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++){
+      if (FantomeMangePacman(itFantome->posX, itFantome->posY, pacmanJ1) == true) {
+        std::cout << "J1 Manger !" << '\n';
+      }
+      if (FantomeMangePacman(itFantome->posX, itFantome->posY, pacmanJ2) == true) {
+        std::cout << "J2 Manger !" << '\n';
+      }
+    }
+
+    //On déplace les fantomes et on test s'ils mangent pacman
     for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
     {
         testX = itFantome->posX + depX[itFantome->dir];
@@ -161,19 +176,17 @@ void Jeu::evolue()
           itFantome->posY = testY;
         }
 
-        if (FantomeMangePacman(testX, testY) == true) {
-          std::cout << "Manger !" << '\n';
+        if (FantomeMangePacman(testX, testY, pacmanJ1) == true) {
+          std::cout << "J1 Manger !" << '\n';
+        }
+        if (FantomeMangePacman(testX, testY, pacmanJ2) == true) {
+          std::cout << "J2 Manger !" << '\n';
         }
     }
 
-    deplacePacman(RIEN, pacmanJ1); //On déplace Pacman
-    deplacePacman(RIEN, pacmanJ2); //On déplace Pacman
 
-    for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++){
-        if (FantomeMangePacman(testX, testY) == true) {
-          std::cout << "Manger !" << '\n';
-      }
-    }
+    //score
+    std::cout << "Score J1 : " << pacmanJ1.score << " | Score J2 : " << pacmanJ2.score << '\n';
 }
 
 bool Jeu::deplacePacman(Direction dir, Pacman &pac)
@@ -200,11 +213,12 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
           if (terrain[pac.posPacmanY*largeur+pac.posPacmanX]==GOMME) {
             //replacer la case par du sol
             terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
-            //fct score ?
+            pac.score += 10;
           }
           else if (terrain[pac.posPacmanY*largeur+pac.posPacmanX]==POWER) {
             //replacer la case par du sol
             terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
+            pac.score += 50;
             //fct manger fantomes
           }
           //dir_prec = dir_save;
@@ -224,11 +238,13 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
             if (terrain[pac.posPacmanY*largeur+pac.posPacmanX]==GOMME) {
               //replacer la case par du sol
               terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
-              //fct score ?
+              pac.score += 10;
+              std::cout << "+10" << '\n';
             }
             else if (terrain[pac.posPacmanY*largeur+pac.posPacmanX]==POWER) {
               //replacer la case par du sol
               terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
+              pac.score += 50;
               //fct manger fantomes
             }
         return true;
@@ -248,16 +264,6 @@ int Jeu::getNbCasesY() const
 {
     return hauteur;
 }
-
-// int Jeu::getPacmanX() const
-// {
-//     return posPacmanX;
-// }
-
-// int Jeu::getPacmanY() const
-// {
-//     return posPacmanY;
-// }
 
 Case Jeu::getCase(int x, int y) const
 {
@@ -285,8 +291,8 @@ void Jeu::SupprFantome(){
     }
 }
 
-bool Jeu::FantomeMangePacman(int posX, int posY) const {
-  if (posX == pacmanJ1.posPacmanX and posY == pacmanJ1.posPacmanY){ //pacman se fait manger
+bool Jeu::FantomeMangePacman(int posX, int posY, Pacman &pac) const {
+  if (posX == pac.posPacmanX and posY == pac.posPacmanY){ //pacman se fait manger
     return true;
   }
   return false;
