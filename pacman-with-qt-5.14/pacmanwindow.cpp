@@ -8,7 +8,13 @@ PacmanWindow::PacmanWindow(QWidget *pParent, Qt::WindowFlags flags):QFrame(pPare
     // Taille des cases en pixels
     int largeurCase, hauteurCase;
 
-    if (pixmapPacman.load("./data/pacman.bmp")==false)
+    if (pixmapPacmanJ1.load("./data/pacmanJ1.bmp")==false)
+    {
+        cout<<"Impossible d'ouvrir pacman.png"<<endl;
+        exit(-1);
+    }
+
+    if (pixmapPacmanJ2.load("./data/pacmanJ2.bmp")==false)
     {
         cout<<"Impossible d'ouvrir pacman.png"<<endl;
         exit(-1);
@@ -97,19 +103,28 @@ void PacmanWindow::paintEvent(QPaintEvent *)
         painter.drawPixmap(itFantome->getPosX()*largeurCase, itFantome->getPosY()*hauteurCase, pixmapFantome);
 
 	// Dessine Pacman
-	painter.drawPixmap(jeu.getPacmanX()*largeurCase, jeu.getPacmanY()*hauteurCase, pixmapPacman);
+  painter.drawPixmap(jeu.pacmanJ1.getPacmanX()*largeurCase, jeu.pacmanJ1.getPacmanY()*hauteurCase, pixmapPacmanJ1);
+  painter.drawPixmap(jeu.pacmanJ2.getPacmanX()*largeurCase, jeu.pacmanJ2.getPacmanY()*hauteurCase, pixmapPacmanJ2);
 }
 
 void PacmanWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key()==Qt::Key_Left)
-        jeu.deplacePacman(GAUCHE);
+        jeu.deplacePacman(GAUCHE, jeu.pacmanJ1);
     else if (event->key()==Qt::Key_Right)
-        jeu.deplacePacman(DROITE);
+        jeu.deplacePacman(DROITE, jeu.pacmanJ1);
     else if (event->key()==Qt::Key_Up)
-        jeu.deplacePacman(HAUT);
+        jeu.deplacePacman(HAUT, jeu.pacmanJ1);
     else if (event->key()==Qt::Key_Down)
-        jeu.deplacePacman(BAS);
+        jeu.deplacePacman(BAS, jeu.pacmanJ1);
+    else if (event->key()==Qt::Key_Q)
+        jeu.deplacePacman(GAUCHE, jeu.pacmanJ2);
+    else if (event->key()==Qt::Key_D)
+        jeu.deplacePacman(DROITE, jeu.pacmanJ2);
+    else if (event->key()==Qt::Key_Z)
+        jeu.deplacePacman(HAUT, jeu.pacmanJ2);
+    else if (event->key()==Qt::Key_S)
+        jeu.deplacePacman(BAS, jeu.pacmanJ2);
 
     update();
 }

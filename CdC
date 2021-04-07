@@ -10,3 +10,5 @@ rajouter des lvl              -
 faire un menu                 -
 
 rajout virage fantomes
+
+bug "manger" si fantome et pacman meme sens un deriere l'autre

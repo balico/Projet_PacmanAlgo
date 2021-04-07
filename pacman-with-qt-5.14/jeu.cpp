@@ -2,6 +2,10 @@
 #include <iostream>
 #include <assert.h>
 
+////////////////////////////////////////////////////////////
+//                        FANTOME                         //
+////////////////////////////////////////////////////////////
+
 Fantome::Fantome()
 {
     posX = 0; posY = 0;
@@ -18,11 +22,35 @@ int Fantome::getPosY() const
     return posY;
 }
 
+////////////////////////////////////////////////////////////
+//                         PACMAN                         //
+////////////////////////////////////////////////////////////
+
+Pacman::Pacman()
+{
+    posPacmanX = posPacmanY = 0;
+    score = 0;
+    dir = dirFutur = DROITE;
+}
+
+int Pacman::getPacmanX() const
+{
+    return posPacmanX;
+}
+
+int Pacman::getPacmanY() const
+{
+    return posPacmanY;
+}
+
+////////////////////////////////////////////////////////////
+//                          JEU                           //
+////////////////////////////////////////////////////////////
+
 Jeu::Jeu()
 {
     terrain = NULL;
     largeur = 0; hauteur = 0;
-    posPacmanX = 0; posPacmanY = 0;
 }
 
 Jeu::~Jeu()
@@ -62,8 +90,9 @@ bool Jeu::init()
 
 	largeur = 17; //+1 pour le tableau !
 	hauteur = 21;
+  terrain = new Case[largeur*hauteur];
 
-	terrain = new Case[largeur*hauteur];
+  fantomes.resize(4);
 
 	for(y=0;y<hauteur;++y)
 		for(x=0;x<largeur;++x)
@@ -77,8 +106,6 @@ bool Jeu::init()
                 terrain[y*largeur+x] = GOMME;
             else
                 terrain[y*largeur+x] = VIDE;
-
-    fantomes.resize(4);
 
 	for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
     {
@@ -97,8 +124,11 @@ bool Jeu::init()
         y = rand()%hauteur;
     } while (terrain[y*largeur+x]==MUR);
 
-    posPacmanX = x,
-    posPacmanY = y;
+    pacmanJ1.posPacmanX = x,
+    pacmanJ1.posPacmanY = y;
+
+    pacmanJ2.posPacmanX = 1,
+    pacmanJ2.posPacmanY = 1;
 
     return true;
 }
@@ -136,7 +166,9 @@ void Jeu::evolue()
         }
     }
 
-    deplacePacman(RIEN); //On déplace Pacman
+    deplacePacman(RIEN, pacmanJ1); //On déplace Pacman
+    deplacePacman(RIEN, pacmanJ2); //On déplace Pacman
+
     for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++){
         if (FantomeMangePacman(testX, testY) == true) {
           std::cout << "Manger !" << '\n';
@@ -144,56 +176,59 @@ void Jeu::evolue()
     }
 }
 
-bool Jeu::deplacePacman(Direction dir)
+bool Jeu::deplacePacman(Direction dir, Pacman &pac)
 {
-    static Direction dir_save=DROITE; //On garde en mémoire la valeur du clavier (de base direction DROITE)
-    static Direction dir_prec=DROITE; //On garde en mémoire la valeur precedente de direction
+    //static Direction dir_save=DROITE; //On garde en mémoire la valeur du clavier (de base direction DROITE)
+    //static Direction dir_prec=DROITE; //On garde en mémoire la valeur precedente de direction
     int depX[] = {-1, 1, 0, 0};
     int depY[] = {0, 0, -1, 1};
     int testX, testY;
 
     if (dir != RIEN){ //Si l'utilisateur change de direction via les boutons
-      dir_save = dir; //on save la valeur pour le prochain evolue()
+      //dir_save = dir; //on save la valeur pour le prochain evolue()
+      pac.dirFutur = dir;
     }
     else{ //Sinon c'est un appel de evolue()
-      testX = posPacmanX + depX[dir_save];
-      testY = posPacmanY + depY[dir_save];
+      testX = pac.posPacmanX + depX[pac.dirFutur];
+      testY = pac.posPacmanY + depY[pac.dirFutur]; //dir_save
 
       if (posValide(testX, testY)) //On test si déplacer Pacman est possible
       {
-          posPacmanX = testX;
-          posPacmanY = testY;
+          pac.posPacmanX = testX;
+          pac.posPacmanY = testY;
 
-          if (terrain[posPacmanY*largeur+posPacmanX]==GOMME) {
+          if (terrain[pac.posPacmanY*largeur+pac.posPacmanX]==GOMME) {
             //replacer la case par du sol
-            terrain[posPacmanY*largeur+posPacmanX]=VIDE;
+            terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
             //fct score ?
           }
-          else if (terrain[posPacmanY*largeur+posPacmanX]==POWER) {
+          else if (terrain[pac.posPacmanY*largeur+pac.posPacmanX]==POWER) {
             //replacer la case par du sol
-            terrain[posPacmanY*largeur+posPacmanX]=VIDE;
+            terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
             //fct manger fantomes
           }
-          dir_prec = dir_save;
+          //dir_prec = dir_save;
+          pac.dir = pac.dirFutur;
           return true;
       }
-      else{ //sinon il garde sa direction
-        testX = posPacmanX + depX[dir_prec];
-        testY = posPacmanY + depY[dir_prec];
+      //Sinon Evolue() il garde sa direction
+      else{
+        testX = pac.posPacmanX + depX[pac.dir]; //dir_prec
+        testY = pac.posPacmanY + depY[pac.dir];
 
         if (posValide(testX, testY)) //On test si déplacer Pacman est possible
         {
-            posPacmanX = testX;
-            posPacmanY = testY;
+            pac.posPacmanX = testX;
+            pac.posPacmanY = testY;
 
-            if (terrain[posPacmanY*largeur+posPacmanX]==GOMME) {
+            if (terrain[pac.posPacmanY*largeur+pac.posPacmanX]==GOMME) {
               //replacer la case par du sol
-              terrain[posPacmanY*largeur+posPacmanX]=VIDE;
+              terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
               //fct score ?
             }
-            else if (terrain[posPacmanY*largeur+posPacmanX]==POWER) {
+            else if (terrain[pac.posPacmanY*largeur+pac.posPacmanX]==POWER) {
               //replacer la case par du sol
-              terrain[posPacmanY*largeur+posPacmanX]=VIDE;
+              terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
               //fct manger fantomes
             }
         return true;
@@ -214,15 +249,15 @@ int Jeu::getNbCasesY() const
     return hauteur;
 }
 
-int Jeu::getPacmanX() const
-{
-    return posPacmanX;
-}
+// int Jeu::getPacmanX() const
+// {
+//     return posPacmanX;
+// }
 
-int Jeu::getPacmanY() const
-{
-    return posPacmanY;
-}
+// int Jeu::getPacmanY() const
+// {
+//     return posPacmanY;
+// }
 
 Case Jeu::getCase(int x, int y) const
 {
@@ -251,7 +286,7 @@ void Jeu::SupprFantome(){
 }
 
 bool Jeu::FantomeMangePacman(int posX, int posY) const {
-  if (posX == posPacmanX and posY == posPacmanY){ //pacman se fait manger
+  if (posX == pacmanJ1.posPacmanX and posY == pacmanJ1.posPacmanY){ //pacman se fait manger
     return true;
   }
   return false;

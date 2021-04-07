@@ -23,6 +23,21 @@ class Fantome
     int getPosY() const;
 };
 
+class Pacman
+{
+    friend class Jeu;
+
+  protected:
+    int posPacmanX, posPacmanY;
+    Direction dir, dirFutur;
+    int score;
+
+  public:
+    Pacman();
+    int getPacmanX() const;
+    int getPacmanY() const;
+};
+
 class Jeu
 {
   protected:
@@ -32,6 +47,8 @@ class Jeu
 
   public:
     list<Fantome> fantomes;
+    Pacman pacmanJ1;
+    Pacman pacmanJ2;
 
   public:
     Jeu();
@@ -48,8 +65,8 @@ class Jeu
     int getNbCasesY() const;
 
     // Retourne la position du Pacman
-    int getPacmanX() const;
-    int getPacmanY() const;
+    // int getPacmanX() const;
+    // int getPacmanY() const;
 
     // Retourne la case à une position donnée
     Case getCase(int, int) const;
@@ -59,7 +76,7 @@ class Jeu
     bool posValide(int, int) const;
 
     // Déplace Pacman dans une direction (si la case à atteindre est valide)
-    bool deplacePacman(Direction);
+    bool deplacePacman(Direction, Pacman &);
 
     // Gestion des fantomes
     void AjouterFantome();
