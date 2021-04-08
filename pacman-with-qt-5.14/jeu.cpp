@@ -25,6 +25,11 @@ int Fantome::getPosY() const
     return posY;
 }
 
+bool Fantome::getvivant() const
+{
+    return vivant;
+}
+
 ////////////////////////////////////////////////////////////
 //                         PACMAN                         //
 ////////////////////////////////////////////////////////////
@@ -34,6 +39,8 @@ Pacman::Pacman()
     posPacmanX = posPacmanY = 0;
     score = 0;
     dir = dirFutur = DROITE;
+    SuperG=false;
+    tempsSup=0;
 }
 
 int Pacman::getPacmanX() const
@@ -96,7 +103,7 @@ bool Jeu::init()
 	hauteur = 22;
   terrain = new Case[largeur*hauteur];
 
-  fantomes.resize(4);
+    fantomes.resize(4);
 
 	for(y=0;y<hauteur;++y)
 		for(x=0;x<largeur;++x)
@@ -115,10 +122,15 @@ bool Jeu::init()
 
 	for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
     {
-        do {
-            x = rand()%largeur;
-            y = rand()%hauteur;
-        } while (terrain[y*largeur+x]==MUR);
+        if(rand()%2==0)
+        {
+            x=7;
+            y=9;
+        }else
+        {
+            x=9;
+            y=9;
+        }
 
         itFantome->posX = x;
         itFantome->posY = y;
@@ -127,13 +139,9 @@ bool Jeu::init()
         itFantome->vivant=true;
     }
 
-    do {
-        x = rand()%largeur;
-        y = rand()%hauteur;
-    } while (terrain[y*largeur+x]==MUR);
 
-    pacmanJ1.posPacmanX = x,
-    pacmanJ1.posPacmanY = y;
+    pacmanJ1.posPacmanX = 15,
+    pacmanJ1.posPacmanY = 1;
 
     pacmanJ2.posPacmanX = 2,
     pacmanJ2.posPacmanY = 2;
@@ -143,29 +151,27 @@ bool Jeu::init()
 
 void Jeu::evolue()
 {
-    int testX, testY;
 	list<Fantome>::iterator itFantome;
 
     int depX[] = {-1, 1, 0, 0,0};
     int depY[] = {0, 0, -1, 1,0};
 
-    //On déplace Pacman
+
+    //On gere les super gommes
+    SuperPacman(pacmanJ1);
+    SuperPacman(pacmanJ2);
+
+
+    //on deplace pacman
     deplacePacman(RIEN, pacmanJ1);
     deplacePacman(RIEN, pacmanJ2);
 
-    //On test s'il se fait manger par n'importe quel fantome
-    for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++){
-      if (FantomeMangePacman(itFantome->posX, itFantome->posY, pacmanJ1) == true) {
-        std::cout << "J1 Manger !" << '\n';
-      }
-      if (FantomeMangePacman(itFantome->posX, itFantome->posY, pacmanJ2) == true) {
-        std::cout << "J2 Manger !" << '\n';
-      }
-    }
 
-    //On déplace les fantomes et on test s'ils mangent pacman
+
+    //On déplace les fantomes et on test s'ils mangent ou se font manger
     for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
     {
+        //on refait apparaitre le fantome si il est de retour au spawn apres sa mort
         if(terrain[(itFantome->posY)*largeur+itFantome->posX]==SPAWN)
         {
             itFantome->vivant=true;
@@ -173,37 +179,46 @@ void Jeu::evolue()
 
         if(itFantome->vivant==true)
         {
-            itFantome->dir=Poursuite(itFantome->posX,itFantome->posY,itFantome->dirPrec);
-            if(itFantome->dir==RIEN)
+            itFantome->dir=Poursuite(itFantome->posX,itFantome->posY,itFantome->dirPrec);//deplacement en fonction de la proximite de pacman
+            if(itFantome->dir==RIEN) // si pacman loin ou pas de deplacement possible interessant
             {
-                itFantome->dir=MouvFantome(itFantome->posX,itFantome->posY,itFantome->dirPrec);
+                itFantome->dir=MouvFantome(itFantome->posX,itFantome->posY,itFantome->dirPrec);//deplacement aleatoire de base
             }
         }else
         {
-            itFantome->dir=Retour(itFantome->posX,itFantome->posY);
+            itFantome->dir=Retour(itFantome->posX,itFantome->posY); // deplacement du fantome vers le spawn si il est mort
         }
+        //on effectue le deplacement
         itFantome->posX = itFantome->posX + depX[itFantome->dir];
         itFantome->posY = itFantome->posY + depY[itFantome->dir];
         itFantome->dirPrec=itFantome->dir;
 
-        if (FantomeMangePacman(testX, testY, pacmanJ1) == true) {
-          std::cout << "J1 Manger !" << '\n';
+        // on fait les test de manger
+        if (FantomeMangePacman(itFantome->posX, itFantome->posY, pacmanJ1) == true) {
+            PerteVie(pacmanJ1);
         }
-        if (FantomeMangePacman(testX, testY, pacmanJ2) == true) {
-          std::cout << "J2 Manger !" << '\n';
+        if (FantomeMangePacman(itFantome->posX, itFantome->posY, pacmanJ2) == true) {
+            PerteVie(pacmanJ2);
+        }
+
+        if (PacmanMangeFantome(itFantome->posX, itFantome->posY, pacmanJ1) == true ) {
+            itFantome->vivant=false;
+        }
+        if (PacmanMangeFantome(itFantome->posX, itFantome->posY, pacmanJ2) == true) {
+            itFantome->vivant=false;
         }
     }
 
 
     //score
-   // std::cout << "Score J1 : " << pacmanJ1.score << " | Score J2 : " << pacmanJ2.score << '\n';
+    std::cout << "Score J1 : " << pacmanJ1.score << " | Score J2 : " << pacmanJ2.score << '\n';
 }
 
 Direction Jeu::Poursuite(int X, int Y, Direction dirPrec)
 {
 
     //on regarde si le fantome est proche de pacman
-    if (((X-pacmanJ1.posPacmanX)*(X-pacmanJ1.posPacmanX))+((Y-pacmanJ1.posPacmanY)*(Y-pacmanJ1.posPacmanY))<10)
+    if (((X-pacmanJ1.posPacmanX)*(X-pacmanJ1.posPacmanX))+((Y-pacmanJ1.posPacmanY)*(Y-pacmanJ1.posPacmanY))<10)//equation de cercle
     {
         if(Y>pacmanJ1.posPacmanY && posValide(X,Y-1)==true && dirPrec!=BAS)
         {
@@ -242,12 +257,12 @@ Direction Jeu::Poursuite(int X, int Y, Direction dirPrec)
 Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
 {
 
-    int possibilite[4];
+    int possibilite[4];//tableau pour stocker la possibilite de deplacement  0:impossible  1:vitre possible que si rien d autre 2:case vide normal 3: chance accru car meme que deplacement precedent
     int nb_2=0;
     int choix;
     int i;
 
-
+    // on fait les test pour les 4 cases
     if(posValide(X-1,Y)==true)
     {
         possibilite[GAUCHE]=2;
@@ -298,8 +313,7 @@ Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
         possibilite[dirPrec]=3;
     }
 
-    //cout<<possibilite[GAUCHE]<<possibilite[DROITE]<<possibilite[HAUT]<<possibilite[BAS]<<"\n";
-
+    //empechement de faire demi tour
     switch (dirPrec)
     {
     case GAUCHE:
@@ -324,6 +338,7 @@ Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
         }
     }
 
+    //tirage si on sut meme deplacement que precedement
     if(possibilite[dirPrec]==3)
     {
         choix=1+rand()%(2+nb_2);
@@ -332,6 +347,8 @@ Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
             return dirPrec;
         }
     }
+
+    //sinon tirage aux hasard des possibilite 2
     if(nb_2>0)
     {
         choix=1+rand()%nb_2;
@@ -349,6 +366,7 @@ Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
         }
     }else
     {
+        //sinon derniere possibilite le deplacement de possibilite 1
         for(i=0;i<4;i++)
         {
             if(possibilite[i]==1)
@@ -357,14 +375,17 @@ Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
             }
         }
     }
+    return RIEN;
 }
 
 Direction Jeu::Retour(int X, int Y)
 {
     float distance1,distance2;
     int x,y;
+    //on calcul de quelle case spawn le fantome est le plus proche pour l y envoyer
     distance1=sqrt((X-7)*(X-7)+(Y-9)*(Y-9));
     distance2=sqrt((X-9)*(X-9)+(Y-9)*(Y-9));
+    //on renvoie le deplacement sur y ou x en fct de quelle est le plus loin
     if (abs(distance1)>abs(distance2))
     {
         x=X-7;
@@ -416,6 +437,51 @@ Direction Jeu::Retour(int X, int Y)
 
 }
 
+
+void Jeu::SuperPacman(Pacman &pac)
+{
+    if(pac.tempsSup>0)
+    {
+        pac.tempsSup-=1;
+    }else
+    {
+        pac.SuperG=false;
+    }
+}
+
+void Jeu::PerteVie(Pacman &pac)
+{
+    //on enleve une vie
+    pac.vie-=1;
+
+    //on remet le jeu en place
+    list<Fantome>::iterator itFantome;
+    int x,y;
+    for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
+    {
+        if(rand()%2==0)
+        {
+            x=7;
+            y=9;
+        }else
+        {
+            x=9;
+            y=9;
+        }
+
+        itFantome->posX = x;
+        itFantome->posY = y;
+        itFantome->dir = (Direction)(rand()%4);
+        itFantome->dirPrec = DROITE;
+        itFantome->vivant=true;
+    }
+    pacmanJ1.posPacmanX = 15,
+    pacmanJ1.posPacmanY = 1;
+
+    pacmanJ2.posPacmanX = 1,
+    pacmanJ2.posPacmanY = 1;
+}
+
 bool Jeu::deplacePacman(Direction dir, Pacman &pac)
 {
     int depX[] = {-1, 1, 0, 0};
@@ -444,10 +510,12 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
             //replacer la case par du sol
             terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
             pac.score += 50;
+            pac.SuperG=true;
+            pac.tempsSup+=30;
             //fct manger fantomes
           }
           pac.dir = pac.dirFutur;
-          return true;
+          return false;
       }
       //Sinon Evolue() il garde sa direction
       else{
@@ -468,7 +536,10 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
             else if (terrain[pac.posPacmanY*largeur+pac.posPacmanX]==POWER) {
               //replacer la case par du sol
               terrain[pac.posPacmanY*largeur+pac.posPacmanX]=VIDE;
+              pac.SuperG=true;
+              pac.tempsSup+=30;
               pac.score += 50;
+
               //fct manger fantomes
             }
         return true;
@@ -519,6 +590,13 @@ void Jeu::SupprFantome(){
 
 bool Jeu::FantomeMangePacman(int posX, int posY, Pacman &pac) const {
   if (posX == pac.posPacmanX and posY == pac.posPacmanY){ //pacman se fait manger
+    return true;
+  }
+  return false;
+}
+
+bool Jeu::PacmanMangeFantome(int posX, int posY, Pacman &pac) const {
+  if (posX == pac.posPacmanX && posY == pac.posPacmanY && pac.SuperG==true){ //le fantome se fait manger
     return true;
   }
   return false;

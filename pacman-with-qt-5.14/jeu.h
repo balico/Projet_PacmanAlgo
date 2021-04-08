@@ -19,10 +19,12 @@ class Fantome
     Direction dirPrec;
     bool vivant;
 
+
   public:
     Fantome();
     int getPosX() const;
     int getPosY() const;
+    bool getvivant() const;
 };
 
 class Pacman
@@ -33,6 +35,9 @@ class Pacman
     int posPacmanX, posPacmanY;
     Direction dir, dirFutur;
     int score;
+    bool SuperG;
+    int tempsSup;
+    int vie;
 
   public:
     Pacman();
@@ -80,9 +85,16 @@ class Jeu
     void AjouterFantome();
     void SupprFantome();
 
+    //gere les super gommes
+    void SuperPacman(Pacman &);
+
+    //fonction qui enleve une vie a pacman quand il est touche et remet tout en place
+    void PerteVie(Pacman &);
+
     // Return si pacman se fait manger (true) ou non
     // bool FantomeMangePacman(Fantome) const;
     bool FantomeMangePacman(int, int, Pacman &) const;
+    bool PacmanMangeFantome(int, int, Pacman &) const;
 
     //return la direction que prend un fantome pour poursuivre pacman
     Direction Poursuite(int, int, Direction);
