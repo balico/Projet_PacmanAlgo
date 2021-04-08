@@ -73,6 +73,12 @@ void PacmanWindow::verif_images(){
       exit(-1);
   }
 
+  if (pixmapFantomeMort.load("./data/fantome_mort.bmp")==false)
+  {
+      cout<<"Impossible d'ouvrir fantome Mort.bmp"<<endl;
+      exit(-1);
+  }
+
   if (pixmapMur.load("./data/mur.bmp")==false)
   {
       cout<<"Impossible d'ouvrir mur.bmp"<<endl;
@@ -124,7 +130,16 @@ void PacmanWindow::paintEvent(QPaintEvent *){
     }
     // Dessine les fantomes
     for (itFantome=jeu.fantomes.begin(); itFantome!=jeu.fantomes.end(); itFantome++)
-        painter.drawPixmap(itFantome->getPosX()*largeurCase, itFantome->getPosY()*hauteurCase, pixmapFantome);
+    {
+        if(itFantome->getvivant()==true)
+        {
+            painter.drawPixmap(itFantome->getPosX()*largeurCase, itFantome->getPosY()*hauteurCase, pixmapFantome);
+        }else
+        {
+            painter.drawPixmap(itFantome->getPosX()*largeurCase, itFantome->getPosY()*hauteurCase, pixmapFantomeMort);
+        }
+    }
+
 
 	// Dessine Pacman
   painter.drawPixmap(jeu.pacmanJ1.getPacmanX()*largeurCase, jeu.pacmanJ1.getPacmanY()*hauteurCase, pixmapPacmanJ1);

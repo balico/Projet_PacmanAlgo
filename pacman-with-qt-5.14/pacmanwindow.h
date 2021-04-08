@@ -12,7 +12,7 @@ class PacmanWindow : public QFrame
   protected:
     Jeu jeu;
     QPixmap pixmapPacmanJ1, pixmapPacmanJ2, pixmapFantome,
-      pixmapMur, pixmapGomme, pixmapVitre, pixmapPower;
+      pixmapMur, pixmapGomme, pixmapVitre, pixmapPower, pixmapFantomeMort;
 
     QBoxLayout *layout_principal;
     QMainWindow *main_window;
