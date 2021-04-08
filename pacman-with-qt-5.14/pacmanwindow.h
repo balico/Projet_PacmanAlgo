@@ -14,14 +14,23 @@ class PacmanWindow : public QFrame
     QPixmap pixmapPacmanJ1, pixmapPacmanJ2, pixmapFantome,
       pixmapMur, pixmapGomme, pixmapVitre, pixmapPower;
 
+    //Var pour savoir si le nb de joueur
+    bool multiOnOff; //false = solo, true = multi
+
+    //Affichage menu initial
     QWidget *menu_principal;
     QVBoxLayout *layout_menu_principal;
-    QMainWindow *main_window;
-
+    //Bouton du menu
     PacmanButton *btnMulti, *btnStartGame;
-    PacmanButton *btnAddFantome, *btnRmvFantome;
 
-    bool multiOnOff; //false = solo, true = multi
+    //Affichage durant la partie
+    QWidget *menu_enJeu;
+    QHBoxLayout *layout_menu_enJeu;
+    //Bouton de l'affichage durant la partie
+    PacmanButton *btnAddFantome, *btnRmvFantome, *btnStopGame;
+    //Affichage score, vie
+    QLabel *affi_scoreJ1, *affi_scoreJ2;
+    QLabel *affi_vieJ1, *affi_vieJ2;
 
   public:
     PacmanWindow(QWidget *pParent=0, Qt::WindowFlags flags=0);
@@ -30,11 +39,14 @@ class PacmanWindow : public QFrame
   protected:
     void verif_images();
 
-    void Init_menu();
+    void Init_menu_principal();
     //initialisation des boutons present pendant le jeu (pause, play, ajout d'ennemi...)
     void Init_bouton_jeu();
     //lance le jeu apres un appui sur play dans le menu principal
     void lancement_jeu();
+    void Fct_btnStopGame();
+
+    void Init_menu_enJeu();
 
     void paintEvent(QPaintEvent *);
     void keyPressEvent(QKeyEvent *);
@@ -42,8 +54,8 @@ class PacmanWindow : public QFrame
     void btnGestionMulti();
     void btnGestionStartGame();
 
-    void btnAjouterFantome();
-    void btnSupprFantome();
+    void Fct_btnAddFantome();
+    void Fct_btnRmvFantome();
 };
 
 class PacmanButton : public QPushButton

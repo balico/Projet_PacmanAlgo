@@ -8473,7 +8473,7 @@
 	<time.h>
 	"pacmanwindow.h"
 
-1617895208 d:\insa\4a\algo\projet_pacmanalgo\pacman-with-qt-5.14\pacmanwindow.h
+1617903996 d:\insa\4a\algo\projet_pacmanalgo\pacman-with-qt-5.14\pacmanwindow.h
 	<QtCore/QtCore>
 	<QtWidgets/QtWidgets>
 	"jeu.h"
@@ -12692,17 +12692,18 @@
 
 1616846693 d:\insa\4a\algo\projet_pacmanalgo\qtbase-small-5.14.1-x64\include\qtwidgets\qtwidgetsversion.h
 
-1617804107 d:\insa\4a\algo\projet_pacmanalgo\pacman-with-qt-5.14\jeu.h
+1617895751 d:\insa\4a\algo\projet_pacmanalgo\pacman-with-qt-5.14\jeu.h
 	<list>
 
-1617887529 source:d:\insa\4a\algo\projet_pacmanalgo\pacman-with-qt-5.14\pacmanwindow.cpp
+1617899685 source:d:\insa\4a\algo\projet_pacmanalgo\pacman-with-qt-5.14\pacmanwindow.cpp
 	<iostream>
 	"pacmanwindow.h"
 
-1617804534 source:d:\insa\4a\algo\projet_pacmanalgo\pacman-with-qt-5.14\jeu.cpp
+1617899936 source:d:\insa\4a\algo\projet_pacmanalgo\pacman-with-qt-5.14\jeu.cpp
 	"jeu.h"
 	<iostream>
 	<assert.h>
+	<math.h>
 
 1617889482 source:c:\users\morde\desktop\4as8\projet pooa\projet_pacmanalgo\pacman-with-qt-5.14\jeu.cpp
 	"jeu.h"

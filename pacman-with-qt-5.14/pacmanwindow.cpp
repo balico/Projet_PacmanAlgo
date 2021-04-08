@@ -7,25 +7,14 @@ PacmanWindow::PacmanWindow(QWidget *pParent, Qt::WindowFlags flags):QFrame(pPare
 {
   multiOnOff = false;
   verif_images();
-  Init_menu();
-
+  Init_menu_principal();
+  Init_menu_enJeu();
 }
 
 void PacmanWindow::lancement_jeu(){
   // Taille des cases en pixels
   int largeurCase, hauteurCase;
   // On check si toutes les images sont ok
-
-  // Bouton pour nb fantomes
-  btnAddFantome = new PacmanButton(this);
-  btnAddFantome->setText("Ajouter fantome");
-  btnAddFantome->setGeometry(10,8,100,17);
-  connect(btnAddFantome, &QPushButton::clicked, this, &PacmanWindow::btnAjouterFantome);
-
-  btnRmvFantome = new PacmanButton(this);
-  btnRmvFantome->setText("Enlever fantome");
-  btnRmvFantome->setGeometry(10+100+10,8,100,17);
-  connect(btnRmvFantome, &QPushButton::clicked, this, &PacmanWindow::btnSupprFantome);
 
   jeu.init();
 
@@ -37,12 +26,14 @@ void PacmanWindow::lancement_jeu(){
   hauteurCase = pixmapMur.height();
 
   resize(jeu.getNbCasesX()*largeurCase, jeu.getNbCasesY()*hauteurCase);
+
+  menu_enJeu->setVisible(true);
 }
 
-void PacmanWindow::Init_menu(){
+void PacmanWindow::Init_menu_principal(){
 
   menu_principal = new QWidget(this);
-  //Définir taille window
+  //Définir taille window ?
 
   layout_menu_principal = new QVBoxLayout(menu_principal);
 
@@ -59,6 +50,32 @@ void PacmanWindow::Init_menu(){
   layout_menu_principal->addWidget(btnMulti);
 
   menu_principal->setVisible(true);
+}
+
+void PacmanWindow::Init_menu_enJeu(){
+
+  menu_enJeu = new QWidget(this);
+  //Définir taille window ?
+
+  layout_menu_enJeu = new QHBoxLayout(menu_enJeu);
+
+  // Bouton pour nb fantomes
+  btnAddFantome = new PacmanButton(menu_enJeu);
+  btnAddFantome->setText("Ajouter fantome");
+  connect(btnAddFantome, &QPushButton::clicked, this, &PacmanWindow::Fct_btnAddFantome);
+  layout_menu_enJeu->addWidget(btnAddFantome);
+
+  btnRmvFantome = new PacmanButton(menu_enJeu);
+  btnRmvFantome->setText("Enlever fantome");
+  connect(btnRmvFantome, &QPushButton::clicked, this, &PacmanWindow::Fct_btnRmvFantome);
+  layout_menu_enJeu->addWidget(btnRmvFantome);
+
+  btnStopGame = new PacmanButton(menu_enJeu);
+  btnStopGame->setText("Quitter la partie");
+  connect(btnStopGame, &QPushButton::clicked, this, &PacmanWindow::Fct_btnStopGame);
+  layout_menu_enJeu->addWidget(btnStopGame);
+
+  menu_enJeu->setVisible(false);
 }
 
 void PacmanWindow::Init_bouton_jeu(){
@@ -173,12 +190,16 @@ void PacmanWindow::btnGestionStartGame(){
   lancement_jeu();
 }
 
-void PacmanWindow::btnAjouterFantome(){
+void PacmanWindow::Fct_btnAddFantome(){
   jeu.AjouterFantome();
 }
 
-void PacmanWindow::btnSupprFantome(){
+void PacmanWindow::Fct_btnRmvFantome(){
     jeu.SupprFantome();
+}
+
+void PacmanWindow::Fct_btnStopGame(){
+  ;
 }
 
 void PacmanWindow::handleTimer(){

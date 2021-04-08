@@ -67,7 +67,8 @@ bool Jeu::init()
 	int x, y;
 	list<Fantome>::iterator itFantome;
 
-  const char terrain_defaut[21][1+17] = {
+  const char terrain_defaut[22][1+17] = {
+    "#################",
     "#################",
     "#.......#.......#",
     "#P#.###.#.###.#P#",
@@ -92,7 +93,7 @@ bool Jeu::init()
     };
 
 	largeur = 17; //+1 pour le tableau !
-	hauteur = 21;
+	hauteur = 22;
   terrain = new Case[largeur*hauteur];
 
   fantomes.resize(4);
@@ -134,8 +135,8 @@ bool Jeu::init()
     pacmanJ1.posPacmanX = x,
     pacmanJ1.posPacmanY = y;
 
-    pacmanJ2.posPacmanX = 1,
-    pacmanJ2.posPacmanY = 1;
+    pacmanJ2.posPacmanX = 2,
+    pacmanJ2.posPacmanY = 2;
 
     return true;
 }
@@ -417,14 +418,12 @@ Direction Jeu::Retour(int X, int Y)
 
 bool Jeu::deplacePacman(Direction dir, Pacman &pac)
 {
-    //static Direction dir_save=DROITE; //On garde en mémoire la valeur du clavier (de base direction DROITE)
-    //static Direction dir_prec=DROITE; //On garde en mémoire la valeur precedente de direction
     int depX[] = {-1, 1, 0, 0};
     int depY[] = {0, 0, -1, 1};
     int testX, testY;
 
     if (dir != RIEN){ //Si l'utilisateur change de direction via les boutons
-      //dir_save = dir; //on save la valeur pour le prochain evolue()
+      //on save la valeur pour le prochain evolue()
       pac.dirFutur = dir;
     }
     else{ //Sinon c'est un appel de evolue()
@@ -447,13 +446,12 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
             pac.score += 50;
             //fct manger fantomes
           }
-          //dir_prec = dir_save;
           pac.dir = pac.dirFutur;
           return true;
       }
       //Sinon Evolue() il garde sa direction
       else{
-        testX = pac.posPacmanX + depX[pac.dir]; //dir_prec
+        testX = pac.posPacmanX + depX[pac.dir];
         testY = pac.posPacmanY + depY[pac.dir];
 
         if (posValide(testX, testY)) //On test si déplacer Pacman est possible
@@ -505,10 +503,10 @@ bool Jeu::posValide(int x, int y) const //pour valider la pos de Pacman
 void Jeu::AjouterFantome(){
   Fantome f;
   f.posX = 8;
-  f.posY = 9;
+  f.posY = 10;
   f.dir = HAUT;
-  f.dirPrec=HAUT;
-  f.vivant=true;
+  f.dirPrec = HAUT;
+  f.vivant = true;
 
   Jeu::fantomes.push_back(f);
 }
