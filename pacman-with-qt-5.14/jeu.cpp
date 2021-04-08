@@ -1,6 +1,7 @@
 #include "jeu.h"
 #include <iostream>
 #include <assert.h>
+#include <math.h>
 
 ////////////////////////////////////////////////////////////
 //                        FANTOME                         //
@@ -10,6 +11,8 @@ Fantome::Fantome()
 {
     posX = 0; posY = 0;
     dir = BAS;
+    dirPrec=BAS;
+    vivant=true;
 }
 
 int Fantome::getPosX() const
@@ -66,15 +69,15 @@ bool Jeu::init()
 
   const char terrain_defaut[21][1+17] = {
     "#################",
-		"#.......#.......#",
-		"#P#.###.#.###.#P#",
-		"#...............#",
+    "#.......#.......#",
+    "#P#.###.#.###.#P#",
+    "#...............#",
     "#.#.#.#####.#.#.#",
     "#...#...#...#...#",
     "###.###.#.###.###",
     "###.#-------#.###",
     "###.#-##V##-#.###",
-    "---.--##-##--.---",
+    "---.--#S-S#--.---",
     "###.#-#####-#.###",
     "###.#-------#.###",
     "###.#-#####-#.###",
@@ -82,9 +85,9 @@ bool Jeu::init()
     "#.##.##.#.##.##.#",
     "#P.#.........#.P#",
     "##.#.#.###.#.#.##",
-		"#....#..#..#....#",
-		"#.#####.#.#####.#",
-		"#...............#",
+    "#....#..#..#....#",
+    "#.#####.#.#####.#",
+    "#...............#",
     "#################",
     };
 
@@ -104,6 +107,8 @@ bool Jeu::init()
                 terrain[y*largeur+x] = VITRE;
             else if (terrain_defaut[y][x]=='.')
                 terrain[y*largeur+x] = GOMME;
+            else if (terrain_defaut[y][x]=='S')
+                terrain[y*largeur+x] = SPAWN;
             else
                 terrain[y*largeur+x] = VIDE;
 
@@ -117,6 +122,8 @@ bool Jeu::init()
         itFantome->posX = x;
         itFantome->posY = y;
         itFantome->dir = (Direction)(rand()%4);
+        itFantome->dirPrec = DROITE;
+        itFantome->vivant=true;
     }
 
     do {
@@ -138,8 +145,8 @@ void Jeu::evolue()
     int testX, testY;
 	list<Fantome>::iterator itFantome;
 
-    int depX[] = {-1, 1, 0, 0};
-    int depY[] = {0, 0, -1, 1};
+    int depX[] = {-1, 1, 0, 0,0};
+    int depY[] = {0, 0, -1, 1,0};
 
     //On déplace Pacman
     deplacePacman(RIEN, pacmanJ1);
@@ -158,23 +165,25 @@ void Jeu::evolue()
     //On déplace les fantomes et on test s'ils mangent pacman
     for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
     {
-        testX = itFantome->posX + depX[itFantome->dir];
-        testY = itFantome->posY + depY[itFantome->dir];
-        if (terrain[testY*largeur+testX]!=MUR)
+        if(terrain[(itFantome->posY)*largeur+itFantome->posX]==SPAWN)
         {
-            itFantome->posX = testX;
-            itFantome->posY = testY;
+            itFantome->vivant=true;
         }
-        else {
-          do {
-            // Changement de direction
-            itFantome->dir = (Direction)(rand()%4);
-            testX = itFantome->posX + depX[itFantome->dir];
-            testY = itFantome->posY + depY[itFantome->dir];
-          } while(terrain[testY*largeur+testX]==MUR);
-          itFantome->posX = testX;
-          itFantome->posY = testY;
+
+        if(itFantome->vivant==true)
+        {
+            itFantome->dir=Poursuite(itFantome->posX,itFantome->posY,itFantome->dirPrec);
+            if(itFantome->dir==RIEN)
+            {
+                itFantome->dir=MouvFantome(itFantome->posX,itFantome->posY,itFantome->dirPrec);
+            }
+        }else
+        {
+            itFantome->dir=Retour(itFantome->posX,itFantome->posY);
         }
+        itFantome->posX = itFantome->posX + depX[itFantome->dir];
+        itFantome->posY = itFantome->posY + depY[itFantome->dir];
+        itFantome->dirPrec=itFantome->dir;
 
         if (FantomeMangePacman(testX, testY, pacmanJ1) == true) {
           std::cout << "J1 Manger !" << '\n';
@@ -186,7 +195,224 @@ void Jeu::evolue()
 
 
     //score
-    std::cout << "Score J1 : " << pacmanJ1.score << " | Score J2 : " << pacmanJ2.score << '\n';
+   // std::cout << "Score J1 : " << pacmanJ1.score << " | Score J2 : " << pacmanJ2.score << '\n';
+}
+
+Direction Jeu::Poursuite(int X, int Y, Direction dirPrec)
+{
+
+    //on regarde si le fantome est proche de pacman
+    if (((X-pacmanJ1.posPacmanX)*(X-pacmanJ1.posPacmanX))+((Y-pacmanJ1.posPacmanY)*(Y-pacmanJ1.posPacmanY))<10)
+    {
+        if(Y>pacmanJ1.posPacmanY && posValide(X,Y-1)==true && dirPrec!=BAS)
+        {
+            return HAUT;
+        }else if(Y<pacmanJ1.posPacmanY && posValide(X,Y+1)==true && dirPrec!=HAUT)
+        {
+            return BAS;
+        }else if(X>pacmanJ1.posPacmanX && posValide(X-1,Y)==true && dirPrec!=DROITE)
+        {
+            return GAUCHE;
+        }else if(X<pacmanJ1.posPacmanX && posValide(X+1,Y)==true && dirPrec!=GAUCHE)
+        {
+            return DROITE;
+        }
+    }else if (((X-pacmanJ2.posPacmanX)*(X-pacmanJ2.posPacmanX))+((Y-pacmanJ2.posPacmanY)*(Y-pacmanJ2.posPacmanY))<10)
+    {
+        if(Y>pacmanJ2.posPacmanY && posValide(X,Y-1)==true && dirPrec!=BAS)
+        {
+            return HAUT;
+        }else if(Y<pacmanJ2.posPacmanY && posValide(X,Y+1)==true && dirPrec!=HAUT)
+        {
+            return BAS;
+        }else if(X>pacmanJ2.posPacmanX && posValide(X-1,Y)==true && dirPrec!=DROITE)
+        {
+            return GAUCHE;
+        }else if(X<pacmanJ2.posPacmanX && posValide(X+1,Y)==true && dirPrec!=GAUCHE)
+        {
+            return DROITE;
+        }
+    }
+    return RIEN;
+
+
+}
+
+Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
+{
+
+    int possibilite[4];
+    int nb_2=0;
+    int choix;
+    int i;
+
+
+    if(posValide(X-1,Y)==true)
+    {
+        possibilite[GAUCHE]=2;
+    }else if(terrain[Y*largeur+X-1]==VITRE)
+    {
+        possibilite[GAUCHE]=1;
+    }else
+    {
+        possibilite[GAUCHE]=0;
+    }
+
+
+    if(posValide(X+1,Y)==true)
+    {
+        possibilite[DROITE]=2;
+    }else if(terrain[Y*largeur+X+1]==VITRE)
+    {
+        possibilite[DROITE]=1;
+    }else
+    {
+        possibilite[DROITE]=0;
+    }
+
+    if(posValide(X,Y+1)==true)
+    {
+        possibilite[BAS]=2;
+    }else if(terrain[(Y+1)*largeur+X]==VITRE)
+    {
+        possibilite[BAS]=1;
+    }else
+    {
+        possibilite[BAS]=0;
+    }
+
+    if(posValide(X,Y-1)==true)
+    {
+        possibilite[HAUT]=2;
+    }else if(terrain[(Y-1)*largeur+X]==VITRE)
+    {
+        possibilite[HAUT]=1;
+    }else
+    {
+        possibilite[HAUT]=0;
+    }
+
+    if(possibilite[dirPrec]==2)
+    {
+        possibilite[dirPrec]=3;
+    }
+
+    //cout<<possibilite[GAUCHE]<<possibilite[DROITE]<<possibilite[HAUT]<<possibilite[BAS]<<"\n";
+
+    switch (dirPrec)
+    {
+    case GAUCHE:
+        possibilite[DROITE]=0;
+        break;
+    case DROITE:
+        possibilite[GAUCHE]=0;
+        break;
+    case HAUT:
+        possibilite[BAS]=0;
+        break;
+    default:
+        possibilite[HAUT]=0;
+        break;
+    }
+
+    for(i=0;i<4;i++)
+    {
+        if(possibilite[i]==2)
+        {
+            nb_2 = nb_2 + 1;
+        }
+    }
+
+    if(possibilite[dirPrec]==3)
+    {
+        choix=1+rand()%(2+nb_2);
+        if(choix<=2)
+        {
+            return dirPrec;
+        }
+    }
+    if(nb_2>0)
+    {
+        choix=1+rand()%nb_2;
+        nb_2=0;
+        for(i=0;i<4;i++)
+        {
+            if(possibilite[i]==2)
+            {
+                nb_2 = nb_2 + 1;
+                if(nb_2==choix)
+                {
+                    return (Direction)(i);
+                }
+            }
+        }
+    }else
+    {
+        for(i=0;i<4;i++)
+        {
+            if(possibilite[i]==1)
+            {
+                return (Direction)(i);
+            }
+        }
+    }
+}
+
+Direction Jeu::Retour(int X, int Y)
+{
+    float distance1,distance2;
+    int x,y;
+    distance1=sqrt((X-7)*(X-7)+(Y-9)*(Y-9));
+    distance2=sqrt((X-9)*(X-9)+(Y-9)*(Y-9));
+    if (abs(distance1)>abs(distance2))
+    {
+        x=X-7;
+        y=Y-9;
+        if(abs(x)>abs(y))
+        {
+            if(x<0)
+            {
+                return DROITE;
+            }else
+            {
+                return GAUCHE;
+            }
+        }else
+        {
+            if(y<0)
+            {
+                return BAS;
+            }else
+            {
+                return HAUT;
+            }
+        }
+    }else
+    {
+        x=X-9;
+        y=Y-9;
+        if(abs(x)>abs(y))
+        {
+            if(x<0)
+            {
+                return DROITE;
+            }else
+            {
+                return GAUCHE;
+            }
+        }else
+        {
+            if(y<0)
+            {
+                return BAS;
+            }else
+            {
+                return HAUT;
+            }
+        }
+    }
+    return RIEN;
+
 }
 
 bool Jeu::deplacePacman(Direction dir, Pacman &pac)
@@ -273,14 +499,16 @@ Case Jeu::getCase(int x, int y) const
 
 bool Jeu::posValide(int x, int y) const //pour valider la pos de Pacman
 {
-    return (x>=0 && x<largeur && y>=0 && y<hauteur && terrain[y*largeur+x]!=MUR && terrain[y*largeur+x]!=VITRE);
+    return (x>=0 && x<largeur && y>=0 && y<hauteur && terrain[y*largeur+x]!=MUR && terrain[y*largeur+x]!=VITRE && terrain[y*largeur+x]!=SPAWN);
 }
 
 void Jeu::AjouterFantome(){
   Fantome f;
   f.posX = 8;
-  f.posY = 10;
+  f.posY = 9;
   f.dir = HAUT;
+  f.dirPrec=HAUT;
+  f.vivant=true;
 
   Jeu::fantomes.push_back(f);
 }
