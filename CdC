@@ -1,12 +1,12 @@
-TP                            - ok
-Avancer pacman const          - ok
 Fantome mange pacman          -
 Pouvoir pour manger fantomes  -
 Manger fantomes               -
 Score                         - ok
-Fantome tourner instant       - ok
 changer terrain               - ok
 rajouter des lvl              -
 faire un menu                 -
 
-rajout virage fantomes
+
+Gestion victoire / game over
+fonction manger (2 sens)
+Différencier 1J ou 2J
