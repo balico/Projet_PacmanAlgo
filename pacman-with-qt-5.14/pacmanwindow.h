@@ -14,11 +14,14 @@ class PacmanWindow : public QFrame
     QPixmap pixmapPacmanJ1, pixmapPacmanJ2, pixmapFantome,
       pixmapMur, pixmapGomme, pixmapVitre, pixmapPower;
 
-    QBoxLayout *layout_principal;
+    QWidget *menu_principal;
+    QVBoxLayout *layout_menu_principal;
     QMainWindow *main_window;
 
+    PacmanButton *btnMulti, *btnStartGame;
     PacmanButton *btnAddFantome, *btnRmvFantome;
-    PacmanButton *btnMulti;
+
+    bool multiOnOff; //false = solo, true = multi
 
   public:
     PacmanWindow(QWidget *pParent=0, Qt::WindowFlags flags=0);
@@ -36,9 +39,11 @@ class PacmanWindow : public QFrame
     void paintEvent(QPaintEvent *);
     void keyPressEvent(QKeyEvent *);
 
+    void btnGestionMulti();
+    void btnGestionStartGame();
+
     void btnAjouterFantome();
     void btnSupprFantome();
-    void btnGestionMulti();
 };
 
 class PacmanButton : public QPushButton

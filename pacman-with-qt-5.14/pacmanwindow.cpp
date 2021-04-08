@@ -5,11 +5,10 @@ using namespace std;
 
 PacmanWindow::PacmanWindow(QWidget *pParent, Qt::WindowFlags flags):QFrame(pParent, flags)
 {
+  multiOnOff = false;
   verif_images();
+  Init_menu();
 
-  // Init_menu();
-
-  lancement_jeu();
 }
 
 void PacmanWindow::lancement_jeu(){
@@ -42,12 +41,24 @@ void PacmanWindow::lancement_jeu(){
 
 void PacmanWindow::Init_menu(){
 
-  // Bouton pour nb fantomes
-  btnMulti = new PacmanButton(this);
-  btnMulti->setText("Multijoueur (2)");
-  btnMulti->setGeometry(10,8,100,17);
-  connect(btnMulti, &QPushButton::clicked, this, &PacmanWindow::btnGestionMulti);
+  menu_principal = new QWidget(this);
+  //Définir taille window
 
+  layout_menu_principal = new QVBoxLayout(menu_principal);
+
+  // Bouton lancer le jeu
+  btnStartGame = new PacmanButton(menu_principal);
+  btnStartGame->setText("Start Game");
+  connect(btnStartGame, &QPushButton::clicked, this, &PacmanWindow::btnGestionStartGame);
+  layout_menu_principal->addWidget(btnStartGame);
+
+  // Bouton activer ou non le multijoueur
+  btnMulti = new PacmanButton(menu_principal);
+  btnMulti->setText("Multijoueur (2 joueurs)");
+  connect(btnMulti, &QPushButton::clicked, this, &PacmanWindow::btnGestionMulti);
+  layout_menu_principal->addWidget(btnMulti);
+
+  menu_principal->setVisible(true);
 }
 
 void PacmanWindow::Init_bouton_jeu(){
@@ -152,12 +163,18 @@ void PacmanWindow::keyPressEvent(QKeyEvent *event){
     update();
 }
 
-void PacmanWindow::btnAjouterFantome(){
-    jeu.AjouterFantome();
+void PacmanWindow::btnGestionMulti(){
+  multiOnOff = !multiOnOff;
+  std::cout << "multi : " << multiOnOff << '\n';
 }
 
-void PacmanWindow::btnGestionMulti(){
-    std::cout << "Hello" << '\n';
+void PacmanWindow::btnGestionStartGame(){
+  menu_principal->setVisible(false);
+  lancement_jeu();
+}
+
+void PacmanWindow::btnAjouterFantome(){
+  jeu.AjouterFantome();
 }
 
 void PacmanWindow::btnSupprFantome(){
