@@ -125,11 +125,11 @@ bool Jeu::init()
         if(rand()%2==0)
         {
             x=7;
-            y=9;
+            y=10;
         }else
         {
             x=9;
-            y=9;
+            y=10;
         }
 
         itFantome->posX = x;
@@ -141,7 +141,7 @@ bool Jeu::init()
 
 
     pacmanJ1.posPacmanX = 15,
-    pacmanJ1.posPacmanY = 1;
+    pacmanJ1.posPacmanY = 2;
 
     pacmanJ2.posPacmanX = 2,
     pacmanJ2.posPacmanY = 2;
@@ -383,13 +383,13 @@ Direction Jeu::Retour(int X, int Y)
     float distance1,distance2;
     int x,y;
     //on calcul de quelle case spawn le fantome est le plus proche pour l y envoyer
-    distance1=sqrt((X-7)*(X-7)+(Y-9)*(Y-9));
-    distance2=sqrt((X-9)*(X-9)+(Y-9)*(Y-9));
+    distance1=sqrt((X-7)*(X-7)+(Y-10)*(Y-10));
+    distance2=sqrt((X-9)*(X-9)+(Y-10)*(Y-10));
     //on renvoie le deplacement sur y ou x en fct de quelle est le plus loin
     if (abs(distance1)>abs(distance2))
     {
         x=X-7;
-        y=Y-9;
+        y=Y-10;
         if(abs(x)>abs(y))
         {
             if(x<0)
@@ -412,7 +412,7 @@ Direction Jeu::Retour(int X, int Y)
     }else
     {
         x=X-9;
-        y=Y-9;
+        y=Y-10;
         if(abs(x)>abs(y))
         {
             if(x<0)
@@ -462,11 +462,11 @@ void Jeu::PerteVie(Pacman &pac)
         if(rand()%2==0)
         {
             x=7;
-            y=9;
+            y=10;
         }else
         {
             x=9;
-            y=9;
+            y=10;
         }
 
         itFantome->posX = x;
@@ -476,10 +476,10 @@ void Jeu::PerteVie(Pacman &pac)
         itFantome->vivant=true;
     }
     pacmanJ1.posPacmanX = 15,
-    pacmanJ1.posPacmanY = 1;
+    pacmanJ1.posPacmanY = 2;
 
     pacmanJ2.posPacmanX = 1,
-    pacmanJ2.posPacmanY = 1;
+    pacmanJ2.posPacmanY = 2;
 }
 
 bool Jeu::deplacePacman(Direction dir, Pacman &pac)
@@ -589,7 +589,7 @@ void Jeu::SupprFantome(){
 }
 
 bool Jeu::FantomeMangePacman(int posX, int posY, Pacman &pac) const {
-  if (posX == pac.posPacmanX and posY == pac.posPacmanY){ //pacman se fait manger
+  if (posX == pac.posPacmanX and posY == pac.posPacmanY && pac.SuperG==false){ //pacman se fait manger
     return true;
   }
   return false;
