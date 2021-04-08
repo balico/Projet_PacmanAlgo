@@ -4,7 +4,7 @@
 #include <list>
 using namespace std;
 
-typedef enum {VIDE, MUR, VITRE, GOMME, POWER} Case;
+typedef enum {VIDE, MUR, VITRE, GOMME, POWER, SPAWN} Case;
 typedef enum {GAUCHE, DROITE, HAUT, BAS, RIEN} Direction;
 
 class Jeu;
@@ -16,6 +16,8 @@ class Fantome
   protected:
     int posX, posY;
     Direction dir;
+    Direction dirPrec;
+    bool vivant;
 
   public:
     Fantome();
@@ -81,6 +83,12 @@ class Jeu
     // Return si pacman se fait manger (true) ou non
     // bool FantomeMangePacman(Fantome) const;
     bool FantomeMangePacman(int, int, Pacman &) const;
+
+    //return la direction que prend un fantome pour poursuivre pacman
+    Direction Poursuite(int, int, Direction);
+
+    Direction MouvFantome(int , int ,Direction);
+    Direction Retour(int , int );
 };
 
 #endif
