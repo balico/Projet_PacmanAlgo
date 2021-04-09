@@ -5,9 +5,9 @@ using namespace std;
 
 PacmanWindow::PacmanWindow(QWidget *pParent, Qt::WindowFlags flags):QFrame(pParent, flags)
 {
-  DansMenu = true;
-  jeu.multiOnOff = false;
-  // On check si toutes les images sont ok
+  DansMenu = true; //de base nous sommes dans un menu
+  jeu.multiOnOff = false; //pas de multi
+  // On check si toutes les images sont ok et on init
   verif_images();
   Init_menu_principal();
   Init_menu_enJeu();
@@ -18,6 +18,7 @@ void PacmanWindow::lancement_jeu(){
   // Taille des cases en pixels
   int largeurCase, hauteurCase;
 
+  //On regarde quelle carte est jouée
   if (jeu.getCarte() == 2) {
     jeu.init2();
   }
@@ -158,12 +159,14 @@ void PacmanWindow::Init_fin_partie(){
     connect(btnRetourMenu, &QPushButton::clicked, this, &PacmanWindow::btnGestionRetourMenu);
     layout_fin_partie->addWidget(btnRetourMenu);
 
+    //Si on gagne et que la carte 1 ou 2 est jouée, on peut choisir de continuer
     btnLvlSuivant = new PacmanButton(fin_partie);
     btnLvlSuivant->setText(" Niveau suivant ");
     connect(btnLvlSuivant, &QPushButton::clicked, this, &PacmanWindow::btnGestionLvlSuivant);
     layout_fin_partie->addWidget(btnLvlSuivant);
-    if (jeu.getvictoire() == true || jeu.getCarte() == 3) {
-      btnLvlSuivant->hide();
+    btnLvlSuivant->hide();
+    if (jeu.getvictoire() == true && jeu.getCarte() != 3) {
+      btnLvlSuivant->show();
     }
 
     //affichage victoire/defaite
@@ -191,17 +194,17 @@ void PacmanWindow::Init_fin_partie(){
 }
 
 void PacmanWindow::Fct_lvl1(){
-  btnSelec_lvl->setText(" niveau 1 ");
+  btnSelec_lvl->setText(" niveau 1 "); //Le texte principal du bouton est changé
   jeu.setCarte(1);
 }
 
 void PacmanWindow::Fct_lvl2(){
-  btnSelec_lvl->setText(" niveau 2 ");
+  btnSelec_lvl->setText(" niveau 2 "); //Le texte principal du bouton est changé
   jeu.setCarte(2);
 }
 
 void PacmanWindow::Fct_lvl3(){
-  btnSelec_lvl->setText(" niveau 3 ");
+  btnSelec_lvl->setText(" niveau 3 "); //Le texte principal du bouton est changé
   jeu.setCarte(3);
 }
 
@@ -247,7 +250,7 @@ void PacmanWindow::btnGestionMulti(){
     affi_scoreJ2->hide();
     affi_vieJ2->hide();
   }
-  if (jeu.multiOnOff == true){ //Si multi, on re affiche le score de J2
+  if (jeu.multiOnOff == true){ //Si multi, on affiche le score de J2
     affi_multiOnOff->setText(" Nombre de Joueurs \n2");
     affi_scoreJ2->show();
     affi_vieJ2->show();
@@ -539,7 +542,7 @@ void PacmanWindow::Fct_btnStopGame(){
   DansMenu = true; //On indique que l'on retourne dans le menu principal (pour l'affichage)
   jeu.stop_partie();
   timer->stop();
-  menu_principal->resize(1000,1000);
+  menu_principal->resize(1000,1000); //resize pour effacer les case (bug d'affichage ?)
   menu_principal->resize(150,135);
 }
 
@@ -551,11 +554,15 @@ void PacmanWindow::btnGestionRetourMenu(){
 void PacmanWindow::btnGestionLvlSuivant(){
   fin_partie->setVisible(false); //on efface l'affichage de fin
   menu_enJeu->setVisible(true); //On affiche le menu en jeu
+  DansMenu = false;
+  //On lance la carte suivante
   if (jeu.getCarte() == 1) {
-    jeu.init2();
+    jeu.setCarte(2);
+    lancement_jeu();
   }
   else if (jeu.getCarte() == 2) {
-    jeu.init3();
+    jeu.setCarte(3);
+    lancement_jeu();
   }
 }
 

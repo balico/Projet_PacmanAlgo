@@ -38,8 +38,8 @@ class Pacman
     int posPacmanX, posPacmanY;
     Direction dir, dirFutur;
     int score, vie;
-    bool SuperG;
-    int tempsSup;
+    bool SuperG; //Si pacman a mangé une gomme pouvoir
+    int tempsSup; //durée de ce pouvoir
 
   public:
     Pacman();
@@ -58,7 +58,7 @@ class Jeu
     int largeur, hauteur; // Nombre de cases en largeur et en hauteur
     int posPacmanX, posPacmanY;
     bool victoire, defaite;
-    int centreX, centreY;
+    int centreX, centreY; //centre de la carte
 
   public:
     list<Fantome> fantomes;
@@ -67,7 +67,7 @@ class Jeu
 
     //Var pour savoir si il y a 1 ou 2 joueurs
     bool multiOnOff; //false = solo, true = multi
-    int carte; //quelle carte
+    int carte; //quelle carte est en jeu
 
   public:
     Jeu();
@@ -76,15 +76,16 @@ class Jeu
 
     Jeu &operator=(const Jeu &)=delete;
 
+    //Une fonction pour chaque carte
     bool init1();
     bool init2();
     bool init3();
 
-    void generationCarte();
     void evolue();
     void restart_manche(Pacman &); //relance une manche
     void stop_partie(); //stop la partie
 
+    //Setter et Getter
     // Retourne les dimensions (en nombre de cases)
     int getNbCasesX() const;
     int getNbCasesY() const;
@@ -94,7 +95,7 @@ class Jeu
 
     bool getvictoire();
     bool getdefaite();
-
+    
     // Retourne la case à une position donnée
     Case getCase(int, int) const;
 

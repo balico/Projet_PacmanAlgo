@@ -89,6 +89,7 @@ Jeu::Jeu()
     terrain = NULL;
     largeur = 0; hauteur = 0;
     victoire=defaite=false;
+    //de base les valeurs de la carte 1
     carte = 1;
     largeur=17;
     centreX=8;
@@ -101,7 +102,7 @@ Jeu::~Jeu()
         delete[] terrain;
 }
 
-//initialisation si map 1 selectionner
+//initialisation si map 1 selectionné
 bool Jeu::init1()
 {
 	int x, y, i=0;
@@ -202,7 +203,7 @@ bool Jeu::init1()
     return true;
 }
 
-//initialisation si map 2 selectionner
+//initialisation si map 2 selectionnée
 bool Jeu::init2()
 {
 	int x, y, i=0;
@@ -299,7 +300,7 @@ bool Jeu::init2()
     return true;
 }
 
-//initialisation si map 3 selectionner
+//initialisation si map 3 selectionnée
 bool Jeu::init3()
 {
 	int x, y, i=0;
@@ -309,7 +310,7 @@ bool Jeu::init3()
 
   largeur=27;
   hauteur=19;
-  centreX=14;
+  centreX=13;
   centreY=9;
   pacmanJ1.SuperG=false;
   pacmanJ1.tempsSup=0;
@@ -404,11 +405,9 @@ void Jeu::evolue()
     int depX[] = {-1, 1, 0, 0,0};
     int depY[] = {0, 0, -1, 1,0};
 
-
     //On gere les super gommes
     SuperPacman(pacmanJ1);
     SuperPacman(pacmanJ2);
-
 
     //on deplace pacman
     if (pacmanJ1.vie>0)
@@ -480,7 +479,6 @@ void Jeu::evolue()
             itFantome->dirPrec=itFantome->dir;
         }
 
-
         // on fait les test de manger
         if (FantomeMangePacman(itFantome->posX, itFantome->posY, pacmanJ1) == true) {
             PerteVie(pacmanJ1);
@@ -503,6 +501,7 @@ void Jeu::evolue()
 
 void Jeu::stop_partie(){
     int x,y;
+    //On vide le terrain (mais l'affichage bug quand meme)
     for(y=0;y<hauteur;++y)
     {
         for(x=0;x<largeur;++x)
@@ -771,7 +770,6 @@ Direction Jeu::Retour(int X, int Y)
     return RIEN;
 
 }
-
 
 void Jeu::SuperPacman(Pacman &pac)
 {

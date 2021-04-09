@@ -1,0 +1,27 @@
+CC = clang++
+CPPFLAGS = -std=c++11 -c -g -fPIC -O3
+LD = clang++
+LDFLAGS = -std=c++11 -O3
+FINAL_TARGET = pacman
+
+QT_DIR = /usr/local/Cellar/qt/5.15.1
+QT_INCLUDE_DIR = $(QT_DIR)/include
+QT_CORE_LIB_DIR = $(QT_DIR)/lib/QtCore.framework/Versions/5
+QT_GUI_LIB_DIR = $(QT_DIR)/lib/QtGui.framework/Versions/5
+QT_WIDGETS_LIB_DIR = $(QT_DIR)/lib/QtWidgets.framework/Versions/5
+QT_PLATFORM_LIB_DIR = $(QT_DIR)/plugins/platforms
+
+INCLUDE_DIR = -I$(QT_INCLUDE_DIR)
+LIB_DIR = -L$(QT_CORE_LIB_DIR) -L$(QT_GUI_LIB_DIR) -L$(QT_WIDGETS_LIB_DIR) -L$(QT_PLATFORM_LIB_DIR)
+LIBS = -lQtCore -lQtGui -lQtWidgets -lqminimal
+
+default: $(FINAL_TARGET)
+
+$(FINAL_TARGET): jeu.o main.o pacmanwindow.o
+	$(LD) $+ -o $@ $(LDFLAGS) $(LIB_DIR) $(LIBS)
+
+%.o: %.cpp
+	$(CC) $(CPPFLAGS) $(INCLUDE_DIR) $< -o $@
+
+clean:
+	rm -f *.o $(FINAL_TARGET)

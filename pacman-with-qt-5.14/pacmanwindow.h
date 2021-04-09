@@ -13,7 +13,7 @@ class PacmanWindow : public QFrame
     Jeu jeu;
 
     //Variable qui permet de savoir quand afficher les pacmans
-    //True = dans le menu principal, false = affichage pacman
+    //True = dans le menu principal, false = hors du menu donc affichage pacman
     bool DansMenu;
     QTimer *timer;
 
@@ -30,7 +30,7 @@ class PacmanWindow : public QFrame
     //Affichage menu initial
     QWidget *menu_principal;
     QVBoxLayout *layout_menu_principal;
-    //Bouton du menu
+    //Boutons du menu
     PacmanButton *btnMulti, *btnStartGame, *btnSelec_lvl;
     //Affichage multijoueur OnOff
     QLabel *affi_multiOnOff;
@@ -58,7 +58,6 @@ class PacmanWindow : public QFrame
     PacmanWindow(QWidget *pParent=0, Qt::WindowFlags flags=0);
     void handleTimer();
 
-
   protected:
     void verif_images();
 
@@ -85,7 +84,7 @@ class PacmanWindow : public QFrame
     void Fct_affichageScore();
     void Fct_affichageVie();
 
-    //fonction du bouton slection lvl
+    //fonction du bouton selection lvl
     void Fct_lvl1();
     void Fct_lvl2();
     void Fct_lvl3();
