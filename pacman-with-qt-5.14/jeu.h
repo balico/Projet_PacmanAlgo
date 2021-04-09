@@ -59,6 +59,7 @@ class Jeu
     int largeur, hauteur; // Nombre de cases en largeur et en hauteur
     int posPacmanX, posPacmanY;
     bool victoire, defaite;
+    int centreX, centreY;
 
   public:
     list<Fantome> fantomes;
@@ -86,7 +87,6 @@ class Jeu
     int getNbCasesY() const;
 
     void setLargeur(int);
-    void setHauteur(int);
     void setCarte(int);
 
     bool getvictoire();

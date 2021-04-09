@@ -90,6 +90,9 @@ Jeu::Jeu()
     largeur = 0; hauteur = 0;
     victoire=defaite=false;
     carte = 1;
+    largeur=17;
+    centreX=8;
+    centreY=10;
 }
 
 Jeu::~Jeu()
@@ -105,35 +108,108 @@ bool Jeu::init()
 
   victoire = defaite = false;
 
-  largeur = 17; //+1 pour le tableau !
-  hauteur = 22;
+
+  if(largeur==17)
+  {
+      hauteur=22;
+  }
+
+
+  if(largeur==23)
+  {
+      hauteur=17;
+
+  }
+
+    if(largeur==27)
+    {
+        hauteur=19;
+    }
+
 
   terrain = new Case[largeur*hauteur];
 
-  const char terrain_defaut[hauteur][largeur+1] = {
-    "#################",
-    "#################",
-    "#.......#.......#",
-    "#P#.###.#.###.#P#",
-    "#...............#",
-    "#.#.#.#####.#.#.#",
-    "#...#...#...#...#",
-    "###.###.#.###.###",
-    "###.#-------#.###",
-    "###.#-##V##-#.###",
-    "G--.--#S-S#--.--D",
-    "###.#-#####-#.###",
-    "###.#-------#.###",
-    "###.#-#####-#.###",
-    "#.......#.......#",
-    "#.##.##.#.##.##.#",
-    "#P.#.........#.P#",
-    "##.#.#.###.#.#.##",
-    "#....#..#..#....#",
-    "#.#####.#.#####.#",
-    "#...............#",
-    "#################",
-    };
+    if(carte==2)
+    {
+        const char terrain_defaut[hauteur][largeur+1] = {
+            "#######################",
+            "#######################",
+            "#P...................P#",
+            "#.####.####.####.####.#",
+            "#.####.##..P..##.####.#",
+            "G.........###.........D",
+            "####.###-------###.####",
+            "####.###-##V##-###.####",
+            "#......--#S-S#--......#",
+            "#.#.###--#####--###.#.#",
+            "#......---------......#",
+            "#####.###########.#####",
+            "#####.##...#...##.#####",
+            "G---.....#...#.....---D",
+            "####.###.##.##.###.####",
+            "#.P..#....#.#....#..P.#",
+            "#......##.....##......#",
+            "#######################",
+            };
+            centreX=11;
+            centreY=7;
+    }else if(carte==3)
+    {
+        const char terrain_defaut[hauteur][largeur+1] = {
+            "###########################",
+            "###########################",
+            "#..........#####..........#",
+            "#.#.##.#.#...P...###.##.#.#",
+            "#......#.##.###.##.#......#",
+            "####.#...#-------#...#.####",
+            "G---...#..-#####-..#...---D",
+            "##-P##...#-------#...##P-##",
+            "##.###.###-##V##-###.###.##",
+            "#........--#S-S#--........#",
+            "###.#.###--#####--###.#.###",
+            "G........---------........D",
+            "#.#..##.###.###.###.##..#.#",
+            "#.##.##.##...#...##.##.##.#",
+            "#..........#...#..........#",
+            "#.#.##.##.#..#..#.##.##.#.#",
+            "#.#.##P#....###....#P##.#.#",
+            "G........##.....##........D",
+            "###########################",
+            };
+            centreX=14;
+            centreY=8;
+    }else
+    {
+        const char terrain_defaut[hauteur][largeur+1] = {
+            "#################",
+            "#################",
+            "#.......#.......#",
+            "#P#.###.#.###.#P#",
+            "#...............#",
+            "#.#.#.#####.#.#.#",
+            "#...#...#...#...#",
+            "###.###.#.###.###",
+            "###.#-------#.###",
+            "###.#-##V##-#.###",
+            "G--.--#S-S#--.--D",
+            "###.#-#####-#.###",
+            "###.#-------#.###",
+            "###.#-#####-#.###",
+            "#.......#.......#",
+            "#.##.##.#.##.##.#",
+            "#P.#.........#.P#",
+            "##.#.#.###.#.#.##",
+            "#....#..#..#....#",
+            "#.#####.#.#####.#",
+            "#...............#",
+            "#################",
+            };
+            centreX=8;
+            centreY=10;
+    }
+
+
+
 
   for(y=0;y<hauteur;++y)
     for(x=0;x<largeur;++x)
@@ -160,12 +236,12 @@ bool Jeu::init()
     {
         if(rand()%2==0)
         {
-            x=7;
-            y=10;
+            x=centreX-1;
+            y=centreY;
         }else
         {
-            x=9;
-            y=10;
+            x=centreX+1;
+            y=centreY;
         }
 
         itFantome->posX = x;
@@ -177,15 +253,15 @@ bool Jeu::init()
         i++;
     }
 
-    pacmanJ1.posPacmanX = 8,
-    pacmanJ1.posPacmanY = 12;
+    pacmanJ1.posPacmanX = centreX;
+    pacmanJ1.posPacmanY = centreY+2;
     pacmanJ1.vie = 3;
     pacmanJ2.vie = 0;
 
     if (multiOnOff == true) {
-      pacmanJ1.posPacmanX = 5,
-      pacmanJ2.posPacmanX = 11,
-      pacmanJ2.posPacmanY = 12;
+      pacmanJ1.posPacmanX = centreX-3;
+      pacmanJ2.posPacmanX = centreX+3;
+      pacmanJ2.posPacmanY = centreY+2;
       pacmanJ2.vie = 3;
     }
 
@@ -479,13 +555,13 @@ Direction Jeu::Retour(int X, int Y)
     float distance1,distance2;
     int x,y;
     //on calcul de quelle case spawn le fantome est le plus proche pour l y envoyer
-    distance1=sqrt((X-7)*(X-7)+(Y-10)*(Y-10));
-    distance2=sqrt((X-9)*(X-9)+(Y-10)*(Y-10));
+    distance1=sqrt((X-centreX-1)*(X-centreX-1)+(Y-centreY)*(Y-centreY));
+    distance2=sqrt((X-centreX+1)*(X-centreX+1)+(Y-centreY)*(Y-centreY));
     //on renvoie le deplacement sur y ou x en fct de quelle est le plus loin
     if (abs(distance1)>abs(distance2))
     {
-        x=X-7;
-        y=Y-10;
+        x=X-centreX-1;
+        y=Y-centreY;
         if(abs(x)>abs(y))
         {
             if(x<0)
@@ -507,8 +583,8 @@ Direction Jeu::Retour(int X, int Y)
         }
     }else
     {
-        x=X-9;
-        y=Y-10;
+        x=X-centreX+1;
+        y=Y-centreY;
         if(abs(x)>abs(y))
         {
             if(x<0)
@@ -561,12 +637,12 @@ void Jeu::restart_manche(Pacman &pac){
     {
         if(rand()%2==0)
         {
-            x=7;
-            y=10;
+            x=centreX-1;
+            y=centreY;
         }else
         {
-            x=9;
-            y=10;
+            x=centreX+1;
+            y=centreY;
         }
         itFantome->posX = x;
         itFantome->posY = y;
@@ -577,8 +653,8 @@ void Jeu::restart_manche(Pacman &pac){
         i++;
     }
 
-    pac.posPacmanX = 6,
-    pac.posPacmanY = 12;
+    pac.posPacmanX = centreX;
+    pac.posPacmanY = centreY+2;
 
 }
 
@@ -675,14 +751,12 @@ void Jeu::setLargeur(int l){
     largeur = l;
 }
 
-void Jeu::setHauteur(int h){
-  if (h>0)
-    hauteur = h;
-}
+
 int Jeu::getNbCasesX() const
 {
     return largeur;
 }
+
 
 int Jeu::getNbCasesY() const
 {

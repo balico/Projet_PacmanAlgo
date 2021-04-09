@@ -176,8 +176,7 @@ void PacmanWindow::Fct_lvl1(){
   int h=22, l=17;
   btnSelec_lvl->setText(" niveau 1 ");
   std::cout << " niveau 1 " << '\n';
-  // jeu.setLargeur(l); //+1 pour le tableau !
-  // jeu.setHauteur(h);
+   jeu.setLargeur(l); //+1 pour le tableau !
   jeu.setCarte(1);
 
 }
@@ -186,8 +185,7 @@ void PacmanWindow::Fct_lvl2(){
   int h=23, l=18;
   btnSelec_lvl->setText(" niveau 2 ");
   std::cout << " niveau 2 " << '\n';
-  // jeu.setLargeur(l); //+1 pour le tableau !
-  // jeu.setHauteur(h);
+   jeu.setLargeur(l); //+1 pour le tableau !
   jeu.setCarte(2);
 }
 
@@ -195,8 +193,7 @@ void PacmanWindow::Fct_lvl3(){
   int h=27, l=19;
   btnSelec_lvl->setText(" niveau 3 ");
   std::cout << " niveau 3 " << '\n';
-  // jeu.setLargeur(l); //+1 pour le tableau !
-  // jeu.setHauteur(h);
+   jeu.setLargeur(l); //+1 pour le tableau !
   jeu.setCarte(2);
 }
 
