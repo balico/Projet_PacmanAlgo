@@ -549,7 +549,7 @@ void PacmanWindow::handleTimer(){
       else
         affi_Condition_fin->setText(" Défaite! ");
 
-      affi_ScoreJ1final->setText(" Score J1 : \n"+ QString::number(jeu.pacmanJ2.getScore()));
+      affi_ScoreJ1final->setText(" Score J1 : \n"+ QString::number(jeu.pacmanJ1.getScore()));
       affi_ScoreJ2final->setText(" Score J2 : \n"+ QString::number(jeu.pacmanJ2.getScore()));
 
       fin_partie->setVisible(true);

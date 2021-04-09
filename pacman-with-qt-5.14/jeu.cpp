@@ -112,6 +112,10 @@ bool Jeu::init1()
   hauteur=22;
   centreX=8;
   centreY=10;
+  pacmanJ1.SuperG=false;
+  pacmanJ1.tempsSup=0;
+  pacmanJ2.SuperG=false;
+  pacmanJ2.tempsSup=0;
 
   terrain = new Case[largeur*hauteur];
 
@@ -208,6 +212,10 @@ bool Jeu::init2()
   hauteur=18;
   centreX=11;
   centreY=8;
+  pacmanJ1.SuperG=false;
+  pacmanJ1.tempsSup=0;
+  pacmanJ2.SuperG=false;
+  pacmanJ2.tempsSup=0;
 
   terrain = new Case[largeur*hauteur];
 
@@ -300,6 +308,10 @@ bool Jeu::init3()
   hauteur=19;
   centreX=14;
   centreY=9;
+  pacmanJ1.SuperG=false;
+  pacmanJ1.tempsSup=0;
+  pacmanJ2.SuperG=false;
+  pacmanJ2.tempsSup=0;
 
   terrain = new Case[largeur*hauteur];
 
@@ -503,7 +515,23 @@ Direction Jeu::Poursuite(int X, int Y, Direction dirPrec)
 {
 
     //on regarde si le fantome est proche de pacman
-    if (((X-pacmanJ1.posPacmanX)*(X-pacmanJ1.posPacmanX))+((Y-pacmanJ1.posPacmanY)*(Y-pacmanJ1.posPacmanY))<10)//equation de cercle
+
+    if (((X-pacmanJ1.posPacmanX)*(X-pacmanJ1.posPacmanX))+((Y-pacmanJ1.posPacmanY)*(Y-pacmanJ1.posPacmanY))<10 && pacmanJ1.SuperG == true)//equation de cercle
+    {
+        if(Y>pacmanJ1.posPacmanY && posValide(X,Y-1)==true && dirPrec!=HAUT)
+        {
+            return BAS;
+        }else if(Y<pacmanJ1.posPacmanY && posValide(X,Y+1)==true && dirPrec!=BAS)
+        {
+            return HAUT;
+        }else if(X>pacmanJ1.posPacmanX && posValide(X-1,Y)==true && dirPrec!=GAUCHE)
+        {
+            return DROITE;
+        }else if(X<pacmanJ1.posPacmanX && posValide(X+1,Y)==true && dirPrec!=DROITE)
+        {
+            return GAUCHE;
+        }
+    }else if (((X-pacmanJ1.posPacmanX)*(X-pacmanJ1.posPacmanX))+((Y-pacmanJ1.posPacmanY)*(Y-pacmanJ1.posPacmanY))<10)
     {
         if(Y>pacmanJ1.posPacmanY && posValide(X,Y-1)==true && dirPrec!=BAS)
         {
@@ -517,6 +545,21 @@ Direction Jeu::Poursuite(int X, int Y, Direction dirPrec)
         }else if(X<pacmanJ1.posPacmanX && posValide(X+1,Y)==true && dirPrec!=GAUCHE)
         {
             return DROITE;
+        }
+    }else if (((X-pacmanJ2.posPacmanX)*(X-pacmanJ2.posPacmanX))+((Y-pacmanJ2.posPacmanY)*(Y-pacmanJ2.posPacmanY))<10 && pacmanJ2.SuperG == true)
+    {
+        if(Y>pacmanJ2.posPacmanY && posValide(X,Y-1)==true && dirPrec!=HAUT)
+        {
+            return BAS;
+        }else if(Y<pacmanJ2.posPacmanY && posValide(X,Y+1)==true && dirPrec!=BAS)
+        {
+            return HAUT;
+        }else if(X>pacmanJ2.posPacmanX && posValide(X-1,Y)==true && dirPrec!=GAUCHE)
+        {
+            return DROITE;
+        }else if(X<pacmanJ2.posPacmanX && posValide(X+1,Y)==true && dirPrec!=DROITE)
+        {
+            return GAUCHE;
         }
     }else if (((X-pacmanJ2.posPacmanX)*(X-pacmanJ2.posPacmanX))+((Y-pacmanJ2.posPacmanY)*(Y-pacmanJ2.posPacmanY))<10)
     {
