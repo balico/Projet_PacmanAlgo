@@ -18,10 +18,10 @@ void PacmanWindow::lancement_jeu(){
   // Taille des cases en pixels
   int largeurCase, hauteurCase;
 
-  if (jeu.carte == 2) {
+  if (jeu.getCarte() == 2) {
     jeu.init2();
   }
-  else if (jeu.carte == 3) {
+  else if (jeu.getCarte() == 3) {
     jeu.init3();
   }
   else{
@@ -176,30 +176,21 @@ void PacmanWindow::Init_fin_partie(){
     affi_ScoreJ2final->setText("  \n1");
     layout_fin_partie->addWidget(affi_ScoreJ2final);
 
-
     fin_partie->setVisible(false);
 }
 
 void PacmanWindow::Fct_lvl1(){
-  int h=22, l=17;
   btnSelec_lvl->setText(" niveau 1 ");
-  std::cout << " niveau 1 " << '\n';
-  jeu.setLargeur(l); //+1 pour le tableau !
   jeu.setCarte(1);
-
 }
 
 void PacmanWindow::Fct_lvl2(){
-  int l=18;
   btnSelec_lvl->setText(" niveau 2 ");
-  jeu.setLargeur(l);
   jeu.setCarte(2);
 }
 
 void PacmanWindow::Fct_lvl3(){
-  int l=19;
   btnSelec_lvl->setText(" niveau 3 ");
-  jeu.setLargeur(l);
   jeu.setCarte(3);
 }
 
@@ -538,7 +529,7 @@ void PacmanWindow::Fct_btnStopGame(){
   jeu.stop_partie();
   timer->stop();
   menu_principal->resize(1000,1000);
-  menu_principal->resize(150,125);
+  menu_principal->resize(150,135);
 }
 
 void PacmanWindow::btnGestionRetourMenu(){

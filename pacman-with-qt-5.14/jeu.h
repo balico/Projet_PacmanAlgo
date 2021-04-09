@@ -89,8 +89,8 @@ class Jeu
     int getNbCasesX() const;
     int getNbCasesY() const;
 
-    void setLargeur(int);
     void setCarte(int);
+    int getCarte() const;
 
     bool getvictoire();
     bool getdefaite();

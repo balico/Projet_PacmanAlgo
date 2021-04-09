@@ -855,13 +855,12 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
 }
 
 void Jeu::setCarte(int c){
-  if (c>0 && c<3)
+  if (c>0)
     carte = c;
 }
 
-void Jeu::setLargeur(int l){
-  if (l>0)
-    largeur = l;
+int Jeu::getCarte() const{
+  return carte;
 }
 
 int Jeu::getNbCasesX() const
