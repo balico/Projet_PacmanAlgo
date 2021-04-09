@@ -4,7 +4,7 @@
 #include <list>
 using namespace std;
 
-typedef enum {VIDE, MUR, VITRE, GOMME, POWER, SPAWN} Case;
+typedef enum {VIDE, MUR, VITRE, GOMME, POWER, SPAWN, TPG, TPD} Case;
 typedef enum {GAUCHE, DROITE, HAUT, BAS, RIEN} Direction;
 typedef enum {ROUGE, ORANGE, VERT, ROSE} Couleur;
 

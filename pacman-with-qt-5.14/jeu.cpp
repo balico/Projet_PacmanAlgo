@@ -115,7 +115,7 @@ bool Jeu::init()
     "###.###.#.###.###",
     "###.#-------#.###",
     "###.#-##V##-#.###",
-    "---.--#S-S#--.---",
+    "G--.--#S-S#--.--D",
     "###.#-#####-#.###",
     "###.#-------#.###",
     "###.#-#####-#.###",
@@ -145,6 +145,10 @@ bool Jeu::init()
                 terrain[y*largeur+x] = GOMME;
             else if (terrain_defaut[y][x]=='S')
                 terrain[y*largeur+x] = SPAWN;
+            else if (terrain_defaut[y][x]=='G')
+                terrain[y*largeur+x] = TPG;
+            else if (terrain_defaut[y][x]=='D')
+                terrain[y*largeur+x] = TPD;
             else
                 terrain[y*largeur+x] = VIDE;
 
@@ -163,18 +167,18 @@ bool Jeu::init()
         itFantome->posX = x;
         itFantome->posY = y;
         itFantome->dir = (Direction)(rand()%4);
-        itFantome->dirPrec = DROITE;
+        itFantome->dirPrec = HAUT;
         itFantome->vivant=true;
         itFantome->col = (Couleur)(i%4);
         i++;
     }
 
-    pacmanJ1.posPacmanX = 6,
+    pacmanJ1.posPacmanX = 8,
     pacmanJ1.posPacmanY = 12;
 
     if (multiOnOff == true) {
-      pacmanJ1.posPacmanX = 3,
-      pacmanJ2.posPacmanX = 9,
+      pacmanJ1.posPacmanX = 5,
+      pacmanJ2.posPacmanX = 11,
       pacmanJ2.posPacmanY = 12;
     }
 
@@ -241,9 +245,19 @@ void Jeu::evolue()
             itFantome->dir=Retour(itFantome->posX,itFantome->posY); // deplacement du fantome vers le spawn si il est mort
         }
         //on effectue le deplacement
-        itFantome->posX = itFantome->posX + depX[itFantome->dir];
-        itFantome->posY = itFantome->posY + depY[itFantome->dir];
-        itFantome->dirPrec=itFantome->dir;
+        if(terrain[(itFantome->posY)*largeur+itFantome->posX]==TPG && itFantome->dir==GAUCHE)
+        {
+            itFantome->posX=largeur-1;
+        }else if(terrain[(itFantome->posY)*largeur+itFantome->posX]==TPD && itFantome->dir==DROITE)
+        {
+            itFantome->posX=0;
+        }else
+        {
+            itFantome->posX = itFantome->posX + depX[itFantome->dir];
+            itFantome->posY = itFantome->posY + depY[itFantome->dir];
+            itFantome->dirPrec=itFantome->dir;
+        }
+
 
         // on fait les test de manger
         if (FantomeMangePacman(itFantome->posX, itFantome->posY, pacmanJ1) == true) {
@@ -265,10 +279,16 @@ void Jeu::evolue()
 }
 
 void Jeu::stop_partie(){
-  //A FINIR
-  // if (terrain!=NULL)
-  //     delete[] terrain;
-  fantomes.clear();
+    int x,y;
+    for(y=0;y<hauteur;++y)
+    {
+        for(x=0;x<largeur;++x)
+        {
+            terrain[y*largeur+x]=VIDE;
+        }
+    }
+    delete[] terrain;
+    fantomes.clear();
 }
 
 Direction Jeu::Poursuite(int X, int Y, Direction dirPrec)
@@ -320,7 +340,7 @@ Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
     int i;
 
     // on fait les test pour les 4 cases
-    if(posValide(X-1,Y)==true)
+    if(posValide(X-1,Y)==true || terrain[Y*largeur+X]==TPG)
     {
         possibilite[GAUCHE]=2;
     }else if(terrain[Y*largeur+X-1]==VITRE)
@@ -332,7 +352,7 @@ Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
     }
 
 
-    if(posValide(X+1,Y)==true)
+    if(posValide(X+1,Y)==true || terrain[Y*largeur+X]==TPD)
     {
         possibilite[DROITE]=2;
     }else if(terrain[Y*largeur+X+1]==VITRE)
@@ -404,6 +424,7 @@ Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
             return dirPrec;
         }
     }
+
 
     //sinon tirage aux hasard des possibilite 2
     if(nb_2>0)
@@ -529,7 +550,7 @@ void Jeu::restart_manche(){
     "###.###.#.###.###",
     "###.#-------#.###",
     "###.#-##V##-#.###",
-    "---.--#S-S#--.---",
+    "G--.--#S-S#--.--D",
     "###.#-#####-#.###",
     "###.#-------#.###",
     "###.#-#####-#.###",
@@ -544,19 +565,23 @@ void Jeu::restart_manche(){
     };
 
     for(y=0;y<hauteur;++y)
-      for(x=0;x<largeur;++x)
-              if (terrain_defaut[y][x]=='#')
-                  terrain[y*largeur+x] = MUR;
-              else if (terrain_defaut[y][x]=='P')
-                  terrain[y*largeur+x] = POWER;
-              else if (terrain_defaut[y][x]=='V')
-                  terrain[y*largeur+x] = VITRE;
-              else if (terrain_defaut[y][x]=='.')
-                  terrain[y*largeur+x] = GOMME;
-              else if (terrain_defaut[y][x]=='S')
-                  terrain[y*largeur+x] = SPAWN;
-              else
-                  terrain[y*largeur+x] = VIDE;
+        for(x=0;x<largeur;++x)
+            if (terrain_defaut[y][x]=='#')
+                terrain[y*largeur+x] = MUR;
+            else if (terrain_defaut[y][x]=='P')
+                terrain[y*largeur+x] = POWER;
+            else if (terrain_defaut[y][x]=='V')
+                terrain[y*largeur+x] = VITRE;
+            else if (terrain_defaut[y][x]=='.')
+                terrain[y*largeur+x] = GOMME;
+            else if (terrain_defaut[y][x]=='S')
+                terrain[y*largeur+x] = SPAWN;
+            else if (terrain_defaut[y][x]=='G')
+                terrain[y*largeur+x] = TPG;
+            else if (terrain_defaut[y][x]=='D')
+                terrain[y*largeur+x] = TPD;
+            else
+                terrain[y*largeur+x] = VIDE;
 
   //reset fantomes
   for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
@@ -624,6 +649,14 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
           pac.dir = pac.dirFutur;
           return false;
       }
+      //on test si il est sur un TP
+      else if(terrain[pac.posPacmanY*largeur+pac.posPacmanX]==TPG && pac.dirFutur==GAUCHE)
+      {
+          pac.posPacmanX=largeur-1;
+      }else if(terrain[pac.posPacmanY*largeur+pac.posPacmanX]==TPD && pac.dirFutur==DROITE)
+      {
+          pac.posPacmanX=0;
+      }
       //Sinon Evolue() il garde sa direction
       else{
         testX = pac.posPacmanX + depX[pac.dir];
@@ -649,6 +682,13 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
               //fct manger fantomes
             }
         return true;
+        }
+        else if(terrain[pac.posPacmanY*largeur+pac.posPacmanX]==TPG && pac.dirFutur==GAUCHE)
+        {
+            pac.posPacmanX=largeur-1;
+        }else if(terrain[pac.posPacmanY*largeur+pac.posPacmanX]==TPD && pac.dirFutur==DROITE)
+        {
+            pac.posPacmanX=0;
         }
       return false;
       }
