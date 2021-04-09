@@ -57,6 +57,8 @@ void PacmanWindow::Init_menu_principal(){
   affi_multiOnOff->setText(" Nombre de Joueurs \n1");
   layout_menu_principal->addWidget(affi_multiOnOff);
 
+  //Affichage menu lvl
+
   menu_principal->setVisible(true);
 }
 
@@ -452,6 +454,8 @@ void PacmanWindow::Fct_btnStopGame(){
   DansMenu = true; //On indique que l'on retourne dans le menu principal (pour l'affichage)
   jeu.stop_partie();
   timer->stop();
+  menu_principal->resize(1000,1000);
+  menu_principal->resize(150,125);
 }
 
 void PacmanWindow::handleTimer(){
@@ -462,10 +466,29 @@ void PacmanWindow::handleTimer(){
   update();
 }
 
+////////////////////////////////////////////////////////////
+//                    PacmanButton                        //
+////////////////////////////////////////////////////////////
+
 PacmanButton::PacmanButton(QWidget *p):QPushButton(p){}
 
 void PacmanButton::keyPressEvent(QKeyEvent *event){
     if (parent()!=NULL){
       QCoreApplication::sendEvent(parent(),event);
     }
+}
+
+////////////////////////////////////////////////////////////
+//                      SimpleMenu                        //
+////////////////////////////////////////////////////////////
+
+SimpleMenu::SimpleMenu(QWidget *parent)
+    : QMainWindow(parent) {
+
+  auto *quit = new QAction("&Quit", this);
+
+  QMenu *file = menuBar()->addMenu("&File");
+  file->addAction(quit);
+
+  connect(quit, &QAction::triggered, qApp, QApplication::quit);
 }

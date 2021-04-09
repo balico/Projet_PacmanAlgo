@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
     srand(time(0));
 
     PacmanWindow wnd;
+    wnd.setWindowTitle("Pacman");
     wnd.show();
 
     return app.exec();

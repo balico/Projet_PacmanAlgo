@@ -34,6 +34,7 @@ class PacmanWindow : public QFrame
     PacmanButton *btnMulti, *btnStartGame;
     //Affichage multijoueur OnOff
     QLabel *affi_multiOnOff;
+    QMenu *menu_lvl;
 
     //Affichage durant la partie
     QWidget *menu_enJeu;
@@ -72,11 +73,25 @@ class PacmanWindow : public QFrame
     void Fct_affichageVie();
 };
 
+////////////////////////////////////////////////////////////
+//                    PacmanButton                        //
+////////////////////////////////////////////////////////////
+
 class PacmanButton : public QPushButton
 {
     public:
       PacmanButton(QWidget *);
       void keyPressEvent(QKeyEvent *);
+};
+
+////////////////////////////////////////////////////////////
+//                      SimpleMenu                        //
+////////////////////////////////////////////////////////////
+
+class SimpleMenu : public QMainWindow {
+
+  public:
+    SimpleMenu(QWidget *parent = nullptr);
 };
 
 #endif
