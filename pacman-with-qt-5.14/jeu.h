@@ -55,6 +55,7 @@ class Jeu
 {
   protected:
     Case *terrain;
+    int carte; //quelle carte
     int largeur, hauteur; // Nombre de cases en largeur et en hauteur
     int posPacmanX, posPacmanY;
     bool victoire, defaite;
@@ -75,6 +76,7 @@ class Jeu
     Jeu &operator=(const Jeu &)=delete;
 
     bool init();
+    void generationCarte();
     void evolue();
     void restart_manche(Pacman &); //relance une manche
     void stop_partie(); //stop la partie
@@ -82,6 +84,10 @@ class Jeu
     // Retourne les dimensions (en nombre de cases)
     int getNbCasesX() const;
     int getNbCasesY() const;
+
+    void setLargeur(int);
+    void setHauteur(int);
+    void setCarte(int);
 
     bool getvictoire();
     bool getdefaite();

@@ -84,6 +84,11 @@ class PacmanWindow : public QFrame
 
     void Fct_affichageScore();
     void Fct_affichageVie();
+
+    //fonction du bouton slection lvl
+    void Fct_lvl1();
+    void Fct_lvl2();
+    void Fct_lvl3();
 };
 
 ////////////////////////////////////////////////////////////

@@ -89,6 +89,7 @@ Jeu::Jeu()
     terrain = NULL;
     largeur = 0; hauteur = 0;
     victoire=defaite=false;
+    carte = 1;
 }
 
 Jeu::~Jeu()
@@ -102,10 +103,12 @@ bool Jeu::init()
 	int x, y, i=0;
 	list<Fantome>::iterator itFantome;
 
+  victoire = defaite = false;
+
   largeur = 17; //+1 pour le tableau !
   hauteur = 22;
 
-  victoire = defaite = false;
+  terrain = new Case[largeur*hauteur];
 
   const char terrain_defaut[hauteur][largeur+1] = {
     "#################",
@@ -132,12 +135,8 @@ bool Jeu::init()
     "#################",
     };
 
-  terrain = new Case[largeur*hauteur];
-
-  fantomes.resize(4);
-
-	for(y=0;y<hauteur;++y)
-		for(x=0;x<largeur;++x)
+  for(y=0;y<hauteur;++y)
+    for(x=0;x<largeur;++x)
             if (terrain_defaut[y][x]=='#')
                 terrain[y*largeur+x] = MUR;
             else if (terrain_defaut[y][x]=='P')
@@ -154,6 +153,8 @@ bool Jeu::init()
                 terrain[y*largeur+x] = TPD;
             else
                 terrain[y*largeur+x] = VIDE;
+
+  fantomes.resize(4);
 
 	for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
     {
@@ -187,8 +188,6 @@ bool Jeu::init()
       pacmanJ2.posPacmanY = 12;
       pacmanJ2.vie = 3;
     }
-
-
 
     return true;
 }
@@ -665,6 +664,21 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
     return true;
 }
 
+
+void Jeu::setCarte(int c){
+  if (c>0 && c<3)
+    carte = c;
+}
+
+void Jeu::setLargeur(int l){
+  if (l>0)
+    largeur = l;
+}
+
+void Jeu::setHauteur(int h){
+  if (h>0)
+    hauteur = h;
+}
 int Jeu::getNbCasesX() const
 {
     return largeur;

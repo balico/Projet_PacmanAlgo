@@ -35,7 +35,6 @@ void PacmanWindow::lancement_jeu(){
 void PacmanWindow::Init_menu_principal(){
 
   menu_principal = new QWidget(this);
-  //Définir taille window ?
 
   layout_menu_principal = new QVBoxLayout(menu_principal);
 
@@ -60,18 +59,21 @@ void PacmanWindow::Init_menu_principal(){
 
   //Gestion menu des lvl
   btnSelec_lvl = new PacmanButton(menu_principal);
+  menu_selec_lvl = new QMenu(menu_principal);
   //text de base
   btnSelec_lvl->setText(" niveau 1 ");
   //different choix du menu
-  niveau_1 = new QAction();
-  niveau_1->setText(" niveau 1 ");
-
-  menu_selec_lvl = new QMenu(menu_principal);
+  niveau_1 = new QAction(" niveau 1 ", this);
+  connect(niveau_1, &QAction::triggered, this, &PacmanWindow::Fct_lvl1);
   menu_selec_lvl->addAction(niveau_1);
 
+  niveau_2 = new QAction(" niveau 2 ", this);
+  connect(niveau_2, &QAction::triggered, this, &PacmanWindow::Fct_lvl2);
+  menu_selec_lvl->addAction(niveau_2);
 
-  menu_selec_lvl->addAction(" niveau 2 ");
-  menu_selec_lvl->addAction(" niveau 3 ");
+  niveau_3 = new QAction(" niveau 3 ", this);
+  connect(niveau_3, &QAction::triggered, this, &PacmanWindow::Fct_lvl3);
+  menu_selec_lvl->addAction(niveau_3);
   //on accroche le menu au bouton puis au layout_menu_principal
   btnSelec_lvl->setMenu(menu_selec_lvl);
   layout_menu_principal->addWidget(btnSelec_lvl);
@@ -82,7 +84,6 @@ void PacmanWindow::Init_menu_principal(){
 void PacmanWindow::Init_menu_enJeu(){
 
   menu_enJeu = new QWidget(this);
-  //Définir taille window ?
 
   layout_menu_enJeu = new QHBoxLayout(menu_enJeu);
 
@@ -140,7 +141,6 @@ void PacmanWindow::Init_menu_enJeu(){
 void PacmanWindow::Init_fin_partie(){
 
     fin_partie = new QWidget(this);
-    //Définir taille window ?
 
     layout_fin_partie = new QVBoxLayout(fin_partie);
 
@@ -170,6 +170,34 @@ void PacmanWindow::Init_fin_partie(){
 
 
     fin_partie->setVisible(false);
+}
+
+void PacmanWindow::Fct_lvl1(){
+  int h=22, l=17;
+  btnSelec_lvl->setText(" niveau 1 ");
+  std::cout << " niveau 1 " << '\n';
+  // jeu.setLargeur(l); //+1 pour le tableau !
+  // jeu.setHauteur(h);
+  jeu.setCarte(1);
+
+}
+
+void PacmanWindow::Fct_lvl2(){
+  int h=23, l=18;
+  btnSelec_lvl->setText(" niveau 2 ");
+  std::cout << " niveau 2 " << '\n';
+  // jeu.setLargeur(l); //+1 pour le tableau !
+  // jeu.setHauteur(h);
+  jeu.setCarte(2);
+}
+
+void PacmanWindow::Fct_lvl3(){
+  int h=27, l=19;
+  btnSelec_lvl->setText(" niveau 3 ");
+  std::cout << " niveau 3 " << '\n';
+  // jeu.setLargeur(l); //+1 pour le tableau !
+  // jeu.setHauteur(h);
+  jeu.setCarte(2);
 }
 
 void PacmanWindow::Fct_affichageScore(){
@@ -539,7 +567,6 @@ void PacmanWindow::handleTimer(){
   }
   update();
 }
-
 
 ////////////////////////////////////////////////////////////
 //                    PacmanButton                        //
