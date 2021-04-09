@@ -6,6 +6,7 @@
 #include "jeu.h"
 
 class PacmanButton;
+class SimpleMenu;
 
 class PacmanWindow : public QFrame
 {
@@ -31,10 +32,11 @@ class PacmanWindow : public QFrame
     QWidget *menu_principal;
     QVBoxLayout *layout_menu_principal;
     //Bouton du menu
-    PacmanButton *btnMulti, *btnStartGame;
+    PacmanButton *btnMulti, *btnStartGame, *btnSelec_lvl;
     //Affichage multijoueur OnOff
     QLabel *affi_multiOnOff;
-    QMenu *menu_lvl;
+    QMenu *menu_selec_lvl;
+    QAction *niveau_1, *niveau_2, *niveau_3;
 
     //Affichage durant la partie
     QWidget *menu_enJeu;

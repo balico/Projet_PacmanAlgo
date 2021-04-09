@@ -58,7 +58,23 @@ void PacmanWindow::Init_menu_principal(){
   affi_multiOnOff->setText(" Nombre de Joueurs \n1");
   layout_menu_principal->addWidget(affi_multiOnOff);
 
-  //Affichage menu lvl
+  //Gestion menu des lvl
+  btnSelec_lvl = new PacmanButton(menu_principal);
+  //text de base
+  btnSelec_lvl->setText(" niveau 1 ");
+  //different choix du menu
+  niveau_1 = new QAction();
+  niveau_1->setText(" niveau 1 ");
+
+  menu_selec_lvl = new QMenu(menu_principal);
+  menu_selec_lvl->addAction(niveau_1);
+
+
+  menu_selec_lvl->addAction(" niveau 2 ");
+  menu_selec_lvl->addAction(" niveau 3 ");
+  //on accroche le menu au bouton puis au layout_menu_principal
+  btnSelec_lvl->setMenu(menu_selec_lvl);
+  layout_menu_principal->addWidget(btnSelec_lvl);
 
   menu_principal->setVisible(true);
 }
