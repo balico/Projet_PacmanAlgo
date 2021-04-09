@@ -15,6 +15,7 @@ class PacmanWindow : public QFrame
     //Variable qui permet de savoir quand afficher les pacmans
     //True = dans le menu principal, false = affichage pacman
     bool DansMenu;
+    QTimer *timer;
 
     //Les images
     QPixmap pixmapPacmanJ1D, pixmapPacmanJ1B, pixmapPacmanJ1G, pixmapPacmanJ1H,
