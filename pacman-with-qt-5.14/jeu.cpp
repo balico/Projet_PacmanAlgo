@@ -101,128 +101,229 @@ Jeu::~Jeu()
         delete[] terrain;
 }
 
-bool Jeu::init()
+bool Jeu::init1()
 {
 	int x, y, i=0;
 	list<Fantome>::iterator itFantome;
 
   victoire = defaite = false;
 
-
-  if(largeur==17)
-  {
-      hauteur=22;
-  }
-
-
-  if(largeur==23)
-  {
-      hauteur=18;
-
-  }
-
-    if(largeur==27)
-    {
-        hauteur=19;
-    }
-
+  largeur=17;
+  hauteur=22;
+  centreX=8;
+  centreY=10;
 
   terrain = new Case[largeur*hauteur];
 
-    const char terrain1[22][18] = {
-            "#################",
-            "#################",
-            "#.......#.......#",
-            "#P#.###.#.###.#P#",
-            "#...............#",
-            "#.#.#.#####.#.#.#",
-            "#...#...#...#...#",
-            "###.###.#.###.###",
-            "###.#-------#.###",
-            "###.#-##V##-#.###",
-            "G--.--#S-S#--.--D",
-            "###.#-#####-#.###",
-            "###.#-------#.###",
-            "###.#-#####-#.###",
-            "#.......#.......#",
-            "#.##.##.#.##.##.#",
-            "#P.#.........#.P#",
-            "##.#.#.###.#.#.##",
-            "#....#..#..#....#",
-            "#.#####.#.#####.#",
-            "#...............#",
-            "#################",
-            };
+  const char terrain_defaut[22][18] = {
+          "#################",
+          "#################",
+          "#.......#.......#",
+          "#P#.###.#.###.#P#",
+          "#...............#",
+          "#.#.#.#####.#.#.#",
+          "#...#...#...#...#",
+          "###.###.#.###.###",
+          "###.#-------#.###",
+          "###.#-##V##-#.###",
+          "G--.--#S-S#--.--D",
+          "###.#-#####-#.###",
+          "###.#-------#.###",
+          "###.#-#####-#.###",
+          "#.......#.......#",
+          "#.##.##.#.##.##.#",
+          "#P.#.........#.P#",
+          "##.#.#.###.#.#.##",
+          "#....#..#..#....#",
+          "#.#####.#.#####.#",
+          "#...............#",
+          "#################",
+          };
 
-    const char terrain2[18][24] = {
-            "#######################",
-            "#######################",
-            "#P...................P#",
-            "#.####.####.####.####.#",
-            "#.####.##..P..##.####.#",
-            "G.........###.........D",
-            "####.###-------###.####",
-            "####.###-##V##-###.####",
-            "#......--#S-S#--......#",
-            "#.#.###--#####--###.#.#",
-            "#......---------......#",
-            "#####.###########.#####",
-            "#####.##...#...##.#####",
-            "G---.....#...#.....---D",
-            "####.###.##.##.###.####",
-            "#.P..#....#.#....#..P.#",
-            "#......##.....##......#",
-            "#######################",
-            };
+  for(y=0;y<hauteur;++y)
+    for(x=0;x<largeur;++x)
+            if (terrain_defaut[y][x]=='#')
+                terrain[y*largeur+x] = MUR;
+            else if (terrain_defaut[y][x]=='P')
+                terrain[y*largeur+x] = POWER;
+            else if (terrain_defaut[y][x]=='V')
+                terrain[y*largeur+x] = VITRE;
+            else if (terrain_defaut[y][x]=='.')
+                terrain[y*largeur+x] = GOMME;
+            else if (terrain_defaut[y][x]=='S')
+                terrain[y*largeur+x] = SPAWN;
+            else if (terrain_defaut[y][x]=='G')
+                terrain[y*largeur+x] = TPG;
+            else if (terrain_defaut[y][x]=='D')
+                terrain[y*largeur+x] = TPD;
+            else
+                terrain[y*largeur+x] = VIDE;
 
-    const char terrain3[19][28] = {
-            "###########################",
-            "###########################",
-            "#..........#####..........#",
-            "#.#.##.#.#...P...###.##.#.#",
-            "#......#.##.###.##.#......#",
-            "####.#...#-------#...#.####",
-            "G---...#..-#####-..#...---D",
-            "##-P##...#-------#...##P-##",
-            "##.###.###-##V##-###.###.##",
-            "#........--#S-S#--........#",
-            "###.#.###--#####--###.#.###",
-            "G........---------........D",
-            "#.#..##.###.###.###.##..#.#",
-            "#.##.##.##...#...##.##.##.#",
-            "#..........#...#..........#",
-            "#.#.##.##.#..#..#.##.##.#.#",
-            "#.#.##P#....###....#P##.#.#",
-            "G........##.....##........D",
-            "###########################",
-            };
+  fantomes.resize(4);
 
-    char terrain_defaut[hauteur][largeur+1];
-
-    if(carte==2)
+	for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
     {
-        for(y=0;y<hauteur;++y)
-            for(x=0;x<largeur;++x)
-                terrain_defaut[y][x]=terrain2[y][x];
-        centreX=11;
-        centreY=8;
-    }else if(carte==3)
-    {
-        for(y=0;y<hauteur;++y)
-            for(x=0;x<largeur;++x)
-                terrain_defaut[y][x]=terrain3[y][x];
-        centreX=14;
-        centreY=9;
-    }else
-    {
-        for(y=0;y<hauteur;++y)
-            for(x=0;x<largeur;++x)
-                terrain_defaut[y][x]=terrain1[y][x];
-        centreX=8;
-        centreY=10;
+        if(rand()%2==0)
+        {
+            x=centreX-1;
+            y=centreY;
+        }else
+        {
+            x=centreX+1;
+            y=centreY;
+        }
+
+        itFantome->posX = x;
+        itFantome->posY = y;
+        itFantome->dir = (Direction)(rand()%4);
+        itFantome->dirPrec = HAUT;
+        itFantome->vivant=true;
+        itFantome->col = (Couleur)(i%4);
+        i++;
     }
 
+    pacmanJ1.posPacmanX = centreX;
+    pacmanJ1.posPacmanY = centreY+2;
+    pacmanJ1.vie = 3;
+    pacmanJ2.vie = 0;
 
+    if (multiOnOff == true) {
+      pacmanJ1.posPacmanX = centreX-3;
+      pacmanJ2.posPacmanX = centreX+3;
+      pacmanJ2.posPacmanY = centreY+2;
+      pacmanJ2.vie = 3;
+    }
+
+    return true;
+}
+
+bool Jeu::init2()
+{
+	int x, y, i=0;
+	list<Fantome>::iterator itFantome;
+
+  victoire = defaite = false;
+
+  largeur=23;
+  hauteur=18;
+  centreX=11;
+  centreY=8;
+
+  terrain = new Case[largeur*hauteur];
+
+  const char terrain_defaut[18][24] = {
+          "#######################",
+          "#######################",
+          "#P...................P#",
+          "#.####.####.####.####.#",
+          "#.####.##..P..##.####.#",
+          "G.........###.........D",
+          "####.###-------###.####",
+          "####.###-##V##-###.####",
+          "#......--#S-S#--......#",
+          "#.#.###--#####--###.#.#",
+          "#......---------......#",
+          "#####.###########.#####",
+          "#####.##...#...##.#####",
+          "G---.....#...#.....---D",
+          "####.###.##.##.###.####",
+          "#.P..#....#.#....#..P.#",
+          "#......##.....##......#",
+          "#######################",
+          };
+
+  for(y=0;y<hauteur;++y)
+    for(x=0;x<largeur;++x)
+            if (terrain_defaut[y][x]=='#')
+                terrain[y*largeur+x] = MUR;
+            else if (terrain_defaut[y][x]=='P')
+                terrain[y*largeur+x] = POWER;
+            else if (terrain_defaut[y][x]=='V')
+                terrain[y*largeur+x] = VITRE;
+            else if (terrain_defaut[y][x]=='.')
+                terrain[y*largeur+x] = GOMME;
+            else if (terrain_defaut[y][x]=='S')
+                terrain[y*largeur+x] = SPAWN;
+            else if (terrain_defaut[y][x]=='G')
+                terrain[y*largeur+x] = TPG;
+            else if (terrain_defaut[y][x]=='D')
+                terrain[y*largeur+x] = TPD;
+            else
+                terrain[y*largeur+x] = VIDE;
+
+  fantomes.resize(4);
+
+	for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
+    {
+        if(rand()%2==0)
+        {
+            x=centreX-1;
+            y=centreY;
+        }else
+        {
+            x=centreX+1;
+            y=centreY;
+        }
+
+        itFantome->posX = x;
+        itFantome->posY = y;
+        itFantome->dir = (Direction)(rand()%4);
+        itFantome->dirPrec = HAUT;
+        itFantome->vivant=true;
+        itFantome->col = (Couleur)(i%4);
+        i++;
+    }
+
+    pacmanJ1.posPacmanX = centreX;
+    pacmanJ1.posPacmanY = centreY+2;
+    pacmanJ1.vie = 3;
+    pacmanJ2.vie = 0;
+
+    if (multiOnOff == true) {
+      pacmanJ1.posPacmanX = centreX-3;
+      pacmanJ2.posPacmanX = centreX+3;
+      pacmanJ2.posPacmanY = centreY+2;
+      pacmanJ2.vie = 3;
+    }
+
+    return true;
+}
+
+bool Jeu::init3()
+{
+	int x, y, i=0;
+	list<Fantome>::iterator itFantome;
+
+  victoire = defaite = false;
+
+  largeur=27;
+  hauteur=19;
+  centreX=14;
+  centreY=9;
+
+  terrain = new Case[largeur*hauteur];
+
+  const char terrain_defaut[19][28] = {
+          "###########################",
+          "###########################",
+          "#..........#####..........#",
+          "#.#.##.#.#...P...###.##.#.#",
+          "#......#.##.###.##.#......#",
+          "####.#...#-------#...#.####",
+          "G---...#..-#####-..#...---D",
+          "##-P##...#-------#...##P-##",
+          "##.###.###-##V##-###.###.##",
+          "#........--#S-S#--........#",
+          "###.#.###--#####--###.#.###",
+          "G........---------........D",
+          "#.#..##.###.###.###.##..#.#",
+          "#.##.##.##...#...##.##.##.#",
+          "#..........#...#..........#",
+          "#.#.##.##.#..#..#.##.##.#.#",
+          "#.#.##P#....###....#P##.#.#",
+          "G........##.....##........D",
+          "###########################",
+          };
 
   for(y=0;y<hauteur;++y)
     for(x=0;x<largeur;++x)
@@ -753,7 +854,6 @@ bool Jeu::deplacePacman(Direction dir, Pacman &pac)
     return true;
 }
 
-
 void Jeu::setCarte(int c){
   if (c>0 && c<3)
     carte = c;
@@ -764,12 +864,10 @@ void Jeu::setLargeur(int l){
     largeur = l;
 }
 
-
 int Jeu::getNbCasesX() const
 {
     return largeur;
 }
-
 
 int Jeu::getNbCasesY() const
 {

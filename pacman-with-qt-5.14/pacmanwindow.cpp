@@ -18,7 +18,15 @@ void PacmanWindow::lancement_jeu(){
   // Taille des cases en pixels
   int largeurCase, hauteurCase;
 
-  jeu.init();
+  if (jeu.carte == 2) {
+    jeu.init2();
+  }
+  else if (jeu.carte == 3) {
+    jeu.init3();
+  }
+  else{
+    jeu.init1();
+  }
 
   timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &PacmanWindow::handleTimer);
@@ -176,25 +184,23 @@ void PacmanWindow::Fct_lvl1(){
   int h=22, l=17;
   btnSelec_lvl->setText(" niveau 1 ");
   std::cout << " niveau 1 " << '\n';
-   jeu.setLargeur(l); //+1 pour le tableau !
+  jeu.setLargeur(l); //+1 pour le tableau !
   jeu.setCarte(1);
 
 }
 
 void PacmanWindow::Fct_lvl2(){
-  int h=23, l=18;
+  int l=18;
   btnSelec_lvl->setText(" niveau 2 ");
-  std::cout << " niveau 2 " << '\n';
-   jeu.setLargeur(l); //+1 pour le tableau !
+  jeu.setLargeur(l);
   jeu.setCarte(2);
 }
 
 void PacmanWindow::Fct_lvl3(){
-  int h=27, l=19;
+  int l=19;
   btnSelec_lvl->setText(" niveau 3 ");
-  std::cout << " niveau 3 " << '\n';
-   jeu.setLargeur(l); //+1 pour le tableau !
-  jeu.setCarte(2);
+  jeu.setLargeur(l);
+  jeu.setCarte(3);
 }
 
 void PacmanWindow::Fct_affichageScore(){

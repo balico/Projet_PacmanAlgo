@@ -55,7 +55,6 @@ class Jeu
 {
   protected:
     Case *terrain;
-    int carte; //quelle carte
     int largeur, hauteur; // Nombre de cases en largeur et en hauteur
     int posPacmanX, posPacmanY;
     bool victoire, defaite;
@@ -68,6 +67,7 @@ class Jeu
 
     //Var pour savoir si il y a 1 ou 2 joueurs
     bool multiOnOff; //false = solo, true = multi
+    int carte; //quelle carte
 
   public:
     Jeu();
@@ -76,7 +76,10 @@ class Jeu
 
     Jeu &operator=(const Jeu &)=delete;
 
-    bool init();
+    bool init1();
+    bool init2();
+    bool init3();
+
     void generationCarte();
     void evolue();
     void restart_manche(Pacman &); //relance une manche
