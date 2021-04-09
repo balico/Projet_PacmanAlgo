@@ -30,7 +30,7 @@ void PacmanWindow::lancement_jeu(){
 
   timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &PacmanWindow::handleTimer);
-  timer->start(500); //Temps en ms entre chaque action des fantomes
+  timer->start(250); //Temps en ms entre chaque action des fantomes
 
   largeurCase = pixmapMur.width();
   hauteurCase = pixmapMur.height();
@@ -154,9 +154,17 @@ void PacmanWindow::Init_fin_partie(){
 
     // Bouton revenir au menu
     btnRetourMenu = new PacmanButton(fin_partie);
-    btnRetourMenu->setText("Retour au menu principal");
+    btnRetourMenu->setText(" Retour au menu principal ");
     connect(btnRetourMenu, &QPushButton::clicked, this, &PacmanWindow::btnGestionRetourMenu);
     layout_fin_partie->addWidget(btnRetourMenu);
+
+    btnLvlSuivant = new PacmanButton(fin_partie);
+    btnLvlSuivant->setText(" Niveau suivant ");
+    connect(btnLvlSuivant, &QPushButton::clicked, this, &PacmanWindow::btnGestionLvlSuivant);
+    layout_fin_partie->addWidget(btnLvlSuivant);
+    if (jeu.getvictoire() == true || jeu.getCarte() == 3) {
+      btnLvlSuivant->hide();
+    }
 
     affi_Condition_fin = new QLabel(menu_principal);
     affi_Condition_fin->setFrameStyle(QFrame::Box | QFrame::Raised);
@@ -537,6 +545,17 @@ void PacmanWindow::btnGestionRetourMenu(){
   menu_principal->setVisible(true); //On affiche le menu principal
 }
 
+void PacmanWindow::btnGestionLvlSuivant(){
+  fin_partie->setVisible(false); //on efface l'affichage de fin
+  menu_enJeu->setVisible(true); //On affiche le menu en jeu
+  if (jeu.getCarte() == 1) {
+    jeu.init2();
+  }
+  else if (jeu.getCarte() == 2) {
+    jeu.init3();
+  }
+}
+
 void PacmanWindow::handleTimer(){
   //On met a jours les valeurs de score et la vie a chaque "tour"
   Fct_affichageScore();
@@ -550,14 +569,18 @@ void PacmanWindow::handleTimer(){
         affi_Condition_fin->setText(" Défaite! ");
 
       affi_ScoreJ1final->setText(" Score J1 : \n"+ QString::number(jeu.pacmanJ1.getScore()));
-      affi_ScoreJ2final->setText(" Score J2 : \n"+ QString::number(jeu.pacmanJ2.getScore()));
+      affi_ScoreJ2final->hide();
+      if (jeu.multiOnOff == true) {
+        affi_ScoreJ2final->show();
+        affi_ScoreJ2final->setText(" Score J2 : \n"+ QString::number(jeu.pacmanJ2.getScore()));
+      }
 
       fin_partie->setVisible(true);
       menu_enJeu->setVisible(false);
       DansMenu = true;
       timer->stop();
       menu_principal->resize(1000,1000);
-      menu_principal->resize(150,125);
+      menu_principal->resize(150,135);
   }
   update();
 }
@@ -572,19 +595,4 @@ void PacmanButton::keyPressEvent(QKeyEvent *event){
     if (parent()!=NULL){
       QCoreApplication::sendEvent(parent(),event);
     }
-}
-
-////////////////////////////////////////////////////////////
-//                      SimpleMenu                        //
-////////////////////////////////////////////////////////////
-
-SimpleMenu::SimpleMenu(QWidget *parent)
-    : QMainWindow(parent) {
-
-  auto *quit = new QAction("&Quit", this);
-
-  QMenu *file = menuBar()->addMenu("&File");
-  file->addAction(quit);
-
-  connect(quit, &QAction::triggered, qApp, QApplication::quit);
 }

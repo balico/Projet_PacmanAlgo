@@ -6,7 +6,6 @@
 #include "jeu.h"
 
 class PacmanButton;
-class SimpleMenu;
 
 class PacmanWindow : public QFrame
 {
@@ -51,7 +50,7 @@ class PacmanWindow : public QFrame
     QWidget *fin_partie;
     QVBoxLayout *layout_fin_partie;
     //Bouton du menu
-    PacmanButton *btnRetourMenu;
+    PacmanButton *btnRetourMenu, *btnLvlSuivant;
     //Affichage de la condition de fin et des scores
     QLabel *affi_Condition_fin, *affi_ScoreJ1final, *affi_ScoreJ2final;
 
@@ -78,6 +77,7 @@ class PacmanWindow : public QFrame
     void btnGestionStartGame();
 
     void btnGestionRetourMenu();
+    void btnGestionLvlSuivant();
 
     void Fct_btnAddFantome();
     void Fct_btnRmvFantome();
@@ -100,16 +100,6 @@ class PacmanButton : public QPushButton
     public:
       PacmanButton(QWidget *);
       void keyPressEvent(QKeyEvent *);
-};
-
-////////////////////////////////////////////////////////////
-//                      SimpleMenu                        //
-////////////////////////////////////////////////////////////
-
-class SimpleMenu : public QMainWindow {
-
-  public:
-    SimpleMenu(QWidget *parent = nullptr);
 };
 
 #endif
