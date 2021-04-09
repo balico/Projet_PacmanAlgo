@@ -88,6 +88,7 @@ Jeu::Jeu()
 {
     terrain = NULL;
     largeur = 0; hauteur = 0;
+    victoire=defaite=false;
 }
 
 Jeu::~Jeu()
@@ -103,6 +104,8 @@ bool Jeu::init()
 
   largeur = 17; //+1 pour le tableau !
   hauteur = 22;
+
+  victoire = defaite = false;
 
   const char terrain_defaut[hauteur][largeur+1] = {
     "#################",
@@ -175,14 +178,17 @@ bool Jeu::init()
 
     pacmanJ1.posPacmanX = 8,
     pacmanJ1.posPacmanY = 12;
+    pacmanJ1.vie = 3;
+    pacmanJ2.vie = 0;
 
     if (multiOnOff == true) {
       pacmanJ1.posPacmanX = 5,
       pacmanJ2.posPacmanX = 11,
       pacmanJ2.posPacmanY = 12;
+      pacmanJ2.vie = 3;
     }
 
-    pacmanJ1.vie = pacmanJ2.vie = 3;
+
 
     return true;
 }
@@ -201,10 +207,22 @@ void Jeu::evolue()
 
 
     //on deplace pacman
-    deplacePacman(RIEN, pacmanJ1);
-    if (multiOnOff == true)
-      deplacePacman(RIEN, pacmanJ2);
-
+    if (pacmanJ1.vie>0)
+    {
+        deplacePacman(RIEN, pacmanJ1);
+    }else
+    {
+          pacmanJ1.posPacmanX=-1;
+          pacmanJ1.posPacmanY=-1;
+    }
+    if (pacmanJ2.vie>0)
+    {
+        deplacePacman(RIEN, pacmanJ2);
+    }else
+    {
+          pacmanJ2.posPacmanX=-1;
+          pacmanJ2.posPacmanY=-1;
+    }
     // on fait les test de manger
     for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++){
       if (FantomeMangePacman(itFantome->posX, itFantome->posY, pacmanJ1) == true) {
@@ -276,6 +294,7 @@ void Jeu::evolue()
             pacmanJ2.score += 200;
         }
     }
+    TestFin();
 }
 
 void Jeu::stop_partie(){
@@ -530,88 +549,38 @@ void Jeu::PerteVie(Pacman &pac)
 {
     //on enleve une vie
     pac.vie-=1;
-    restart_manche();
+    restart_manche(pac);
 }
 
-void Jeu::restart_manche(){
-  //on remet le jeu en place
-  list<Fantome>::iterator itFantome;
-  int x,y,i=0;
+void Jeu::restart_manche(Pacman &pac){
+    //on remet le jeu en place
+    list<Fantome>::iterator itFantome;
+    int x,y,i=0;
 
-  //reset terrain
-  const char terrain_defaut[hauteur][largeur+1] = {
-    "#################",
-    "#################",
-    "#.......#.......#",
-    "#P#.###.#.###.#P#",
-    "#...............#",
-    "#.#.#.#####.#.#.#",
-    "#...#...#...#...#",
-    "###.###.#.###.###",
-    "###.#-------#.###",
-    "###.#-##V##-#.###",
-    "G--.--#S-S#--.--D",
-    "###.#-#####-#.###",
-    "###.#-------#.###",
-    "###.#-#####-#.###",
-    "#.......#.......#",
-    "#.##.##.#.##.##.#",
-    "#P.#.........#.P#",
-    "##.#.#.###.#.#.##",
-    "#....#..#..#....#",
-    "#.#####.#.#####.#",
-    "#...............#",
-    "#################",
-    };
-
-    for(y=0;y<hauteur;++y)
-        for(x=0;x<largeur;++x)
-            if (terrain_defaut[y][x]=='#')
-                terrain[y*largeur+x] = MUR;
-            else if (terrain_defaut[y][x]=='P')
-                terrain[y*largeur+x] = POWER;
-            else if (terrain_defaut[y][x]=='V')
-                terrain[y*largeur+x] = VITRE;
-            else if (terrain_defaut[y][x]=='.')
-                terrain[y*largeur+x] = GOMME;
-            else if (terrain_defaut[y][x]=='S')
-                terrain[y*largeur+x] = SPAWN;
-            else if (terrain_defaut[y][x]=='G')
-                terrain[y*largeur+x] = TPG;
-            else if (terrain_defaut[y][x]=='D')
-                terrain[y*largeur+x] = TPD;
-            else
-                terrain[y*largeur+x] = VIDE;
-
-  //reset fantomes
-  for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
-  {
-    if(rand()%2==0)
+    //reset fantomes
+    for (itFantome=fantomes.begin(); itFantome!=fantomes.end(); itFantome++)
     {
-      x=7;
-      y=10;
-    }else
-    {
-      x=9;
-      y=10;
+        if(rand()%2==0)
+        {
+            x=7;
+            y=10;
+        }else
+        {
+            x=9;
+            y=10;
+        }
+        itFantome->posX = x;
+        itFantome->posY = y;
+        itFantome->dir = (Direction)(rand()%4);
+        itFantome->dirPrec = DROITE;
+        itFantome->vivant=true;
+        itFantome->col = (Couleur)(i%4);
+        i++;
     }
-    itFantome->posX = x;
-    itFantome->posY = y;
-    itFantome->dir = (Direction)(rand()%4);
-    itFantome->dirPrec = DROITE;
-    itFantome->vivant=true;
-    itFantome->col = (Couleur)(i%4);
-    i++;
-  }
-  pacmanJ1.posPacmanX = 6,
-  pacmanJ1.posPacmanY = 12;
 
-  if (multiOnOff == true) {
-    pacmanJ1.posPacmanX = 3,
-    pacmanJ2.posPacmanX = 9,
-    pacmanJ2.posPacmanY = 12;
-  }
-  pacmanJ1.score = pacmanJ2.score = 0;
+    pac.posPacmanX = 6,
+    pac.posPacmanY = 12;
+
 }
 
 bool Jeu::deplacePacman(Direction dir, Pacman &pac)
@@ -706,6 +675,16 @@ int Jeu::getNbCasesY() const
     return hauteur;
 }
 
+bool Jeu::getvictoire()
+{
+    return victoire;
+}
+
+bool Jeu::getdefaite()
+{
+    return defaite;
+}
+
 Case Jeu::getCase(int x, int y) const
 {
     assert(x>=0 && x<largeur && y>=0 && y<hauteur);
@@ -747,4 +726,27 @@ bool Jeu::PacmanMangeFantome(int posX, int posY, Pacman &pac) const {
     return true;
   }
   return false;
+}
+
+void Jeu::TestFin()
+{
+    victoire=true;
+    int x,y;
+    for(y=0;y<hauteur;++y)
+    {
+        for(x=0;x<largeur;++x)
+        {
+            if(terrain[y*largeur+x]==GOMME || terrain[y*largeur+x]==POWER)
+                victoire=false;
+        }
+    }
+
+    if(pacmanJ1.vie<1 && pacmanJ2.vie<1)
+        defaite=true;
+
+    if(victoire==true || defaite==true)
+    {
+        stop_partie();
+    }
+
 }

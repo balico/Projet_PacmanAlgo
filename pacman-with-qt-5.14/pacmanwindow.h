@@ -45,6 +45,14 @@ class PacmanWindow : public QFrame
     QLabel *affi_scoreJ1, *affi_scoreJ2;
     QLabel *affi_vieJ1, *affi_vieJ2;
 
+    //Affichage fin de partie
+    QWidget *fin_partie;
+    QVBoxLayout *layout_fin_partie;
+    //Bouton du menu
+    PacmanButton *btnRetourMenu;
+    //Affichage de la condition de fin et des scores
+    QLabel *affi_Condition_fin, *affi_ScoreJ1final, *affi_ScoreJ2final;
+
   public:
     PacmanWindow(QWidget *pParent=0, Qt::WindowFlags flags=0);
     void handleTimer();
@@ -55,6 +63,7 @@ class PacmanWindow : public QFrame
 
     void Init_menu_principal();
     void Init_menu_enJeu();
+    void Init_fin_partie();
 
     //lance le jeu apres un appui sur play dans le menu principal
     void lancement_jeu();
@@ -65,6 +74,8 @@ class PacmanWindow : public QFrame
 
     void btnGestionMulti();
     void btnGestionStartGame();
+
+    void btnGestionRetourMenu();
 
     void Fct_btnAddFantome();
     void Fct_btnRmvFantome();

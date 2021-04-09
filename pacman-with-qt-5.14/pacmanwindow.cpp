@@ -11,6 +11,7 @@ PacmanWindow::PacmanWindow(QWidget *pParent, Qt::WindowFlags flags):QFrame(pPare
   verif_images();
   Init_menu_principal();
   Init_menu_enJeu();
+  Init_fin_partie();
 }
 
 void PacmanWindow::lancement_jeu(){
@@ -118,6 +119,41 @@ void PacmanWindow::Init_menu_enJeu(){
   affi_scoreJ2->hide(); //On cache car de base pas de multi
   affi_vieJ2->hide();
   menu_enJeu->setVisible(false); //non visible de base, visible une fois la partie ON
+}
+
+void PacmanWindow::Init_fin_partie(){
+
+    fin_partie = new QWidget(this);
+    //Définir taille window ?
+
+    layout_fin_partie = new QVBoxLayout(fin_partie);
+
+    // Bouton revenir au menu
+    btnRetourMenu = new PacmanButton(fin_partie);
+    btnRetourMenu->setText("Retour au menu principal");
+    connect(btnRetourMenu, &QPushButton::clicked, this, &PacmanWindow::btnGestionRetourMenu);
+    layout_fin_partie->addWidget(btnRetourMenu);
+
+    affi_Condition_fin = new QLabel(menu_principal);
+    affi_Condition_fin->setFrameStyle(QFrame::Box | QFrame::Raised);
+    affi_Condition_fin->setAlignment(Qt::AlignCenter);
+    affi_Condition_fin->setText("  \n1");
+    layout_fin_partie->addWidget(affi_Condition_fin);
+
+    affi_ScoreJ1final = new QLabel(menu_principal);
+    affi_ScoreJ1final->setFrameStyle(QFrame::Box | QFrame::Raised);
+    affi_ScoreJ1final->setAlignment(Qt::AlignCenter);
+    affi_ScoreJ1final->setText("  \n1");
+    layout_fin_partie->addWidget(affi_ScoreJ1final);
+
+    affi_ScoreJ2final = new QLabel(menu_principal);
+    affi_ScoreJ2final->setFrameStyle(QFrame::Box | QFrame::Raised);
+    affi_ScoreJ2final->setAlignment(Qt::AlignCenter);
+    affi_ScoreJ2final->setText("  \n1");
+    layout_fin_partie->addWidget(affi_ScoreJ2final);
+
+
+    fin_partie->setVisible(false);
 }
 
 void PacmanWindow::Fct_affichageScore(){
@@ -458,13 +494,36 @@ void PacmanWindow::Fct_btnStopGame(){
   menu_principal->resize(150,125);
 }
 
+void PacmanWindow::btnGestionRetourMenu(){
+  fin_partie->setVisible(false); //on efface l'affichage de fin
+  menu_principal->setVisible(true); //On affiche le menu principal
+}
+
 void PacmanWindow::handleTimer(){
   //On met a jours les valeurs de score et la vie a chaque "tour"
   Fct_affichageScore();
   Fct_affichageVie();
   jeu.evolue();
+  if(jeu.getvictoire()==true || jeu.getdefaite()==true)
+  {
+      if(jeu.getvictoire()==true)
+        affi_Condition_fin->setText(" Victoire! ");
+      else
+        affi_Condition_fin->setText(" Défaite! ");
+
+      affi_ScoreJ1final->setText(" Score J1 : \n"+ QString::number(jeu.pacmanJ2.getScore()));
+      affi_ScoreJ2final->setText(" Score J2 : \n"+ QString::number(jeu.pacmanJ2.getScore()));
+
+      fin_partie->setVisible(true);
+      menu_enJeu->setVisible(false);
+      DansMenu = true;
+      timer->stop();
+      menu_principal->resize(1000,1000);
+      menu_principal->resize(150,125);
+  }
   update();
 }
+
 
 ////////////////////////////////////////////////////////////
 //                    PacmanButton                        //

@@ -57,6 +57,7 @@ class Jeu
     Case *terrain;
     int largeur, hauteur; // Nombre de cases en largeur et en hauteur
     int posPacmanX, posPacmanY;
+    bool victoire, defaite;
 
   public:
     list<Fantome> fantomes;
@@ -75,12 +76,15 @@ class Jeu
 
     bool init();
     void evolue();
-    void restart_manche(); //relance une manche
+    void restart_manche(Pacman &); //relance une manche
     void stop_partie(); //stop la partie
 
     // Retourne les dimensions (en nombre de cases)
     int getNbCasesX() const;
     int getNbCasesY() const;
+
+    bool getvictoire();
+    bool getdefaite();
 
     // Retourne la case à une position donnée
     Case getCase(int, int) const;
@@ -112,6 +116,9 @@ class Jeu
 
     Direction MouvFantome(int , int ,Direction);
     Direction Retour(int , int );
+
+    //fonction gerant la detection de la fin de partie
+    void TestFin();
 };
 
 #endif
