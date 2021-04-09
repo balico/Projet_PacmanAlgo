@@ -6,6 +6,7 @@ using namespace std;
 
 typedef enum {VIDE, MUR, VITRE, GOMME, POWER, SPAWN} Case;
 typedef enum {GAUCHE, DROITE, HAUT, BAS, RIEN} Direction;
+typedef enum {ROUGE, ORANGE, VERT, ROSE} Couleur;
 
 class Jeu;
 
@@ -15,16 +16,18 @@ class Fantome
 
   protected:
     int posX, posY;
-    Direction dir;
-    Direction dirPrec;
+    Direction dir, dirPrec;
     bool vivant;
-
+    Couleur col;
 
   public:
     Fantome();
     int getPosX() const;
     int getPosY() const;
+
     bool getvivant() const;
+    Couleur getCouleur() const;
+    Direction getDir() const;
 };
 
 class Pacman
@@ -34,15 +37,18 @@ class Pacman
   protected:
     int posPacmanX, posPacmanY;
     Direction dir, dirFutur;
-    int score;
+    int score, vie;
     bool SuperG;
     int tempsSup;
-    int vie;
 
   public:
     Pacman();
     int getPacmanX() const;
     int getPacmanY() const;
+    int getScore() const;
+    int getVie() const;
+    bool getSuperG() const;
+    Direction getDir() const;
 };
 
 class Jeu
@@ -57,6 +63,9 @@ class Jeu
     Pacman pacmanJ1;
     Pacman pacmanJ2;
 
+    //Var pour savoir si il y a 1 ou 2 joueurs
+    bool multiOnOff; //false = solo, true = multi
+
   public:
     Jeu();
     Jeu(const Jeu &)=delete;
@@ -66,6 +75,8 @@ class Jeu
 
     bool init();
     void evolue();
+    void restart_manche(); //relance une manche
+    void stop_partie(); //stop la partie
 
     // Retourne les dimensions (en nombre de cases)
     int getNbCasesX() const;

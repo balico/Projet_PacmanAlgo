@@ -1,12 +1,12 @@
-Fantome mange pacman          -
-Pouvoir pour manger fantomes  -
-Manger fantomes               -
+Fantome mange pacman          - ok
+Pouvoir pour manger fantomes  - ok
+Manger fantomes               - ok
 Score                         - ok
 changer terrain               - ok
 rajouter des lvl              -
-faire un menu                 -
+faire un menu                 - ~~
 
 
-Gestion victoire / game over
-fonction manger (2 sens)
-Différencier 1J ou 2J
+Gestion victoire / game over  -
+fonction manger (2 sens)      - ok
+Diff 1J ou 2J                 - ok
