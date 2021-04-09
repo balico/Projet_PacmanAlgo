@@ -101,6 +101,7 @@ Jeu::~Jeu()
         delete[] terrain;
 }
 
+//initialisation si map 1 selectionner
 bool Jeu::init1()
 {
 	int x, y, i=0;
@@ -201,6 +202,7 @@ bool Jeu::init1()
     return true;
 }
 
+//initialisation si map 2 selectionner
 bool Jeu::init2()
 {
 	int x, y, i=0;
@@ -297,6 +299,7 @@ bool Jeu::init2()
     return true;
 }
 
+//initialisation si map 3 selectionner
 bool Jeu::init3()
 {
 	int x, y, i=0;
@@ -511,28 +514,29 @@ void Jeu::stop_partie(){
     fantomes.clear();
 }
 
+//fonction qui renvoie la direction que prend le fantome quand pacman est proche
 Direction Jeu::Poursuite(int X, int Y, Direction dirPrec)
 {
 
-    //on regarde si le fantome est proche de pacman
+    //on regarde si le fantome est proche de pacman et si il a une superGomme
 
     if (((X-pacmanJ1.posPacmanX)*(X-pacmanJ1.posPacmanX))+((Y-pacmanJ1.posPacmanY)*(Y-pacmanJ1.posPacmanY))<10 && pacmanJ1.SuperG == true)//equation de cercle
-    {
-        if(Y>pacmanJ1.posPacmanY && posValide(X,Y-1)==true && dirPrec!=HAUT)
+    {//le fantome fuit pacman
+        if(Y>pacmanJ1.posPacmanY && posValide(X,Y+1)==true && dirPrec!=HAUT)
         {
             return BAS;
-        }else if(Y<pacmanJ1.posPacmanY && posValide(X,Y+1)==true && dirPrec!=BAS)
+        }else if(Y<pacmanJ1.posPacmanY && posValide(X,Y-1)==true && dirPrec!=BAS)
         {
             return HAUT;
-        }else if(X>pacmanJ1.posPacmanX && posValide(X-1,Y)==true && dirPrec!=GAUCHE)
+        }else if(X>pacmanJ1.posPacmanX && posValide(X+1,Y)==true && dirPrec!=GAUCHE)
         {
             return DROITE;
-        }else if(X<pacmanJ1.posPacmanX && posValide(X+1,Y)==true && dirPrec!=DROITE)
+        }else if(X<pacmanJ1.posPacmanX && posValide(X-1,Y)==true && dirPrec!=DROITE)
         {
             return GAUCHE;
         }
     }else if (((X-pacmanJ1.posPacmanX)*(X-pacmanJ1.posPacmanX))+((Y-pacmanJ1.posPacmanY)*(Y-pacmanJ1.posPacmanY))<10)
-    {
+    {//le fantome poursuit pacman
         if(Y>pacmanJ1.posPacmanY && posValide(X,Y-1)==true && dirPrec!=BAS)
         {
             return HAUT;
@@ -548,16 +552,16 @@ Direction Jeu::Poursuite(int X, int Y, Direction dirPrec)
         }
     }else if (((X-pacmanJ2.posPacmanX)*(X-pacmanJ2.posPacmanX))+((Y-pacmanJ2.posPacmanY)*(Y-pacmanJ2.posPacmanY))<10 && pacmanJ2.SuperG == true)
     {
-        if(Y>pacmanJ2.posPacmanY && posValide(X,Y-1)==true && dirPrec!=HAUT)
+        if(Y>pacmanJ2.posPacmanY && posValide(X,Y+1)==true && dirPrec!=HAUT)
         {
             return BAS;
-        }else if(Y<pacmanJ2.posPacmanY && posValide(X,Y+1)==true && dirPrec!=BAS)
+        }else if(Y<pacmanJ2.posPacmanY && posValide(X,Y-1)==true && dirPrec!=BAS)
         {
             return HAUT;
-        }else if(X>pacmanJ2.posPacmanX && posValide(X-1,Y)==true && dirPrec!=GAUCHE)
+        }else if(X>pacmanJ2.posPacmanX && posValide(X+1,Y)==true && dirPrec!=GAUCHE)
         {
             return DROITE;
-        }else if(X<pacmanJ2.posPacmanX && posValide(X+1,Y)==true && dirPrec!=DROITE)
+        }else if(X<pacmanJ2.posPacmanX && posValide(X-1,Y)==true && dirPrec!=DROITE)
         {
             return GAUCHE;
         }
@@ -582,6 +586,7 @@ Direction Jeu::Poursuite(int X, int Y, Direction dirPrec)
 
 }
 
+//fonction qui renvoie la direction semi-aleatoire que prends le fantome quand pacman n'est pas proche
 Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
 {
 
@@ -707,6 +712,7 @@ Direction Jeu::MouvFantome(int X, int Y,Direction dirPrec)
     return RIEN;
 }
 
+//fonction qui renvoie la direction que doit prendre le fantome pour retourner au spawn apres sa mort
 Direction Jeu::Retour(int X, int Y)
 {
     float distance1,distance2;
@@ -766,6 +772,7 @@ Direction Jeu::Retour(int X, int Y)
 
 }
 
+
 void Jeu::SuperPacman(Pacman &pac)
 {
     if(pac.tempsSup>0)
@@ -809,7 +816,7 @@ void Jeu::restart_manche(Pacman &pac){
         itFantome->col = (Couleur)(i%4);
         i++;
     }
-
+    //on repositionne pacman au centre
     pac.posPacmanX = centreX;
     pac.posPacmanY = centreY+2;
 
@@ -969,6 +976,7 @@ bool Jeu::PacmanMangeFantome(int posX, int posY, Pacman &pac) const {
   return false;
 }
 
+//fonction qui regarde a chaque tour si la partie est fini
 void Jeu::TestFin()
 {
     victoire=true;
@@ -977,17 +985,17 @@ void Jeu::TestFin()
     {
         for(x=0;x<largeur;++x)
         {
-            if(terrain[y*largeur+x]==GOMME || terrain[y*largeur+x]==POWER)
+            if(terrain[y*largeur+x]==GOMME || terrain[y*largeur+x]==POWER) // pas de victoire si il reste une gomme ou une supergomme
                 victoire=false;
         }
     }
 
-    if(pacmanJ1.vie<1 && pacmanJ2.vie<1)
+    if(pacmanJ1.vie<1 && pacmanJ2.vie<1) //defaite si les pacmans ont plus de vie
         defaite=true;
 
     if(victoire==true || defaite==true)
     {
-        stop_partie();
+        stop_partie();//on stop la partie
     }
 
 }

@@ -158,18 +158,21 @@ void PacmanWindow::Init_fin_partie(){
     connect(btnRetourMenu, &QPushButton::clicked, this, &PacmanWindow::btnGestionRetourMenu);
     layout_fin_partie->addWidget(btnRetourMenu);
 
+    //affichage victoire/defaite
     affi_Condition_fin = new QLabel(menu_principal);
     affi_Condition_fin->setFrameStyle(QFrame::Box | QFrame::Raised);
     affi_Condition_fin->setAlignment(Qt::AlignCenter);
     affi_Condition_fin->setText("  \n1");
     layout_fin_partie->addWidget(affi_Condition_fin);
 
+    //affichage score J1
     affi_ScoreJ1final = new QLabel(menu_principal);
     affi_ScoreJ1final->setFrameStyle(QFrame::Box | QFrame::Raised);
     affi_ScoreJ1final->setAlignment(Qt::AlignCenter);
     affi_ScoreJ1final->setText("  \n1");
     layout_fin_partie->addWidget(affi_ScoreJ1final);
 
+    //affichage score J2
     affi_ScoreJ2final = new QLabel(menu_principal);
     affi_ScoreJ2final->setFrameStyle(QFrame::Box | QFrame::Raised);
     affi_ScoreJ2final->setAlignment(Qt::AlignCenter);
@@ -542,19 +545,21 @@ void PacmanWindow::handleTimer(){
   Fct_affichageScore();
   Fct_affichageVie();
   jeu.evolue();
-  if(jeu.getvictoire()==true || jeu.getdefaite()==true)
+  if(jeu.getvictoire()==true || jeu.getdefaite()==true) //test fin de la partie
   {
-      if(jeu.getvictoire()==true)
+      if(jeu.getvictoire()==true) //affichage de la raison de fin
         affi_Condition_fin->setText(" Victoire! ");
       else
         affi_Condition_fin->setText(" Défaite! ");
 
-      affi_ScoreJ1final->setText(" Score J1 : \n"+ QString::number(jeu.pacmanJ1.getScore()));
+      affi_ScoreJ1final->setText(" Score J1 : \n"+ QString::number(jeu.pacmanJ1.getScore()));//on met le texte a jour avec le score
       affi_ScoreJ2final->setText(" Score J2 : \n"+ QString::number(jeu.pacmanJ2.getScore()));
 
+    //on affiche le tout
       fin_partie->setVisible(true);
       menu_enJeu->setVisible(false);
       DansMenu = true;
+      //et on arrete le timer
       timer->stop();
       menu_principal->resize(1000,1000);
       menu_principal->resize(150,125);
